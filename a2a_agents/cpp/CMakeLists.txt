@@ -40,7 +40,7 @@ target_link_libraries(a2ui_validation PUBLIC nlohmann_json::nlohmann_json nlohma
 # executable: test_validation
 enable_testing()
 add_executable(test_validation tests/test_validation.cpp)
-target_link_libraries(test_validation PRIVATE a2ui_validation GTest::gtest_main)
+target_link_libraries(test_validation PRIVATE a2ui_validation GTest::gtest_main GTest::gmock)
 
 include(GoogleTest)
 gtest_discover_tests(test_validation)

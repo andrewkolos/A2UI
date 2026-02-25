@@ -15,6 +15,7 @@
  */
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include "a2ui/validation.hpp"
 
 using json = nlohmann::json;
@@ -123,7 +124,7 @@ TEST_F(ValidationTest, DuplicateIds) {
         a2ui::validate_a2ui_json(payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Duplicate component ID found: 'root'"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Duplicate component ID found: 'root'"));
     }
 }
 
@@ -135,7 +136,7 @@ TEST_F(ValidationTest, MissingRoot) {
         a2ui::validate_a2ui_json(payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Missing 'root' component"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Missing 'root' component"));
     }
 }
 
@@ -147,7 +148,7 @@ TEST_F(ValidationTest, DanglingReferencesCard) {
         a2ui::validate_a2ui_json(payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Component 'root' references missing ID 'missing_child' in field 'child'"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Component 'root' references missing ID 'missing_child' in field 'child'"));
     }
 }
 
@@ -162,7 +163,7 @@ TEST_F(ValidationTest, DanglingReferencesColumn) {
         a2ui::validate_a2ui_json(payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Component 'root' references missing ID 'missing_child' in field 'children'"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Component 'root' references missing ID 'missing_child' in field 'children'"));
     }
 }
 
@@ -176,7 +177,7 @@ TEST_F(ValidationTest, SelfReference) {
         a2ui::validate_a2ui_json(payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Self-reference detected: Component 'root' references itself in field 'children'"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Self-reference detected: Component 'root' references itself in field 'children'"));
     }
 }
 
@@ -197,7 +198,7 @@ TEST_F(ValidationTest, CircularReference) {
         a2ui::validate_a2ui_json(payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Circular reference detected involving component"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Circular reference detected involving component"));
     }
 }
 
@@ -212,7 +213,7 @@ TEST_F(ValidationTest, OrphanedComponent) {
         a2ui::validate_a2ui_json(payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Orphaned components detected (not reachable from 'root'): ['orphan']"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Orphaned components detected (not reachable from 'root'): ['orphan']"));
     }
 }
 
@@ -263,7 +264,7 @@ TEST_F(ValidationTest, RecursionLimitExceeded) {
         a2ui::validate_a2ui_json(payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Recursion limit exceeded"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Recursion limit exceeded"));
     }
 }
 
@@ -307,7 +308,7 @@ TEST_F(ValidationTest, InvalidPath1) {
         a2ui::validate_a2ui_json(payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Invalid JSON Pointer syntax"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Invalid JSON Pointer syntax"));
     }
 }
 
@@ -324,7 +325,7 @@ TEST_F(ValidationTest, InvalidPath2) {
         a2ui::validate_a2ui_json(payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Invalid JSON Pointer syntax"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Invalid JSON Pointer syntax"));
     }
 }
 
@@ -340,7 +341,7 @@ TEST_F(ValidationTest, InvalidPath3) {
         a2ui::validate_a2ui_json(payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Invalid JSON Pointer syntax"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Invalid JSON Pointer syntax"));
     }
 }
 
@@ -355,7 +356,7 @@ TEST_F(ValidationTest, GlobalRecursionLimitExceeded) {
         a2ui::validate_a2ui_json(deep_payload, schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Global recursion limit exceeded"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Global recursion limit exceeded"));
     }
 }
 
@@ -408,6 +409,6 @@ TEST_F(ValidationTest, CustomSchemaReference) {
         a2ui::validate_a2ui_json(payload, custom_schema);
         FAIL() << "Expected std::invalid_argument";
     } catch (const std::invalid_argument& e) {
-        EXPECT_NE(std::string(e.what()).find("Component 'root' references missing ID 'missing_target' in field 'linkedComponentId'"), std::string::npos);
+        EXPECT_THAT(e.what(), ::testing::HasSubstr("Component 'root' references missing ID 'missing_target' in field 'linkedComponentId'"));
     }
 }

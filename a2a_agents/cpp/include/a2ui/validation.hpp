@@ -23,6 +23,8 @@ namespace a2ui {
 /**
  * Validates the A2UI JSON payload against the provided schema and checks for integrity.
  *
+ * The payload can be a single message object or an array of message objects.
+ *
  * Checks performed:
  * 1.  **JSON Schema Validation**: Ensures payload adheres to the A2UI schema.
  * 2.  **Component Integrity**:

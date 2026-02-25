@@ -25,7 +25,6 @@
 #include <unordered_set>
 #include <stdexcept>
 #include <algorithm>
-#include <iostream>
 
 namespace a2ui {
 
@@ -83,23 +82,7 @@ bool is_child_list_ref(const nlohmann::json& prop_schema) {
 RefFieldsMap _extract_component_ref_fields(const nlohmann::json& schema) {
     RefFieldsMap ref_map;
 
-    if (!schema.contains("properties") || !schema["properties"].is_object()) return ref_map;
-    const auto& props_schema = schema["properties"];
-    if (!props_schema.contains(COMPONENTS) || !props_schema[COMPONENTS].is_object()) return ref_map;
-    const auto& comps_schema = props_schema[COMPONENTS];
-    
-    if (!comps_schema.contains("items") || !comps_schema["items"].is_object()) return ref_map;
-    const auto& items_schema = comps_schema["items"];
-
-    if (!items_schema.contains("properties") || !items_schema["properties"].is_object()) return ref_map;
-    const auto& items_props_schema = items_schema["properties"];
-
-    if (!items_props_schema.contains(COMPONENT_PROPERTIES) || !items_props_schema[COMPONENT_PROPERTIES].is_object()) return ref_map;
-    const auto& comp_props_schema = items_props_schema[COMPONENT_PROPERTIES];
-
-    if (!comp_props_schema.contains("properties") || !comp_props_schema["properties"].is_object()) return ref_map;
-    const auto& all_components = comp_props_schema["properties"];
-
+    const auto& all_components = schema.at(nlohmann::json::json_pointer("/properties/components/items/properties/componentProperties/properties"));
     for (auto it = all_components.begin(); it != all_components.end(); ++it) {
         std::string comp_name = it.key();
         auto comp_schema = it.value();
@@ -190,7 +173,7 @@ void _validate_component_integrity(const nlohmann::json& components, const RefFi
 
 void _validate_topology(const nlohmann::json& components, const RefFieldsMap& ref_fields_map) {
     std::unordered_map<std::string, std::vector<std::string>> adj_list;
-    std::set<std::string> all_ids;
+    std::unordered_set<std::string> all_ids;
 
     for (const auto& comp : components) {
         auto id_it = comp.find(ID);
@@ -233,7 +216,7 @@ void _validate_topology(const nlohmann::json& components, const RefFieldsMap& re
         dfs(ROOT);
     }
 
-    std::set<std::string> orphans;
+    std::unordered_set<std::string> orphans;
     for (const auto& id : all_ids) {
         if (!visited.count(id)) {
             orphans.insert(id);
@@ -242,8 +225,10 @@ void _validate_topology(const nlohmann::json& components, const RefFieldsMap& re
     
     if (!orphans.empty()) {
         std::string err = "Orphaned components detected (not reachable from 'root'): [";
+        std::vector<std::string> sorted_orphans(orphans.begin(), orphans.end());
+        std::sort(sorted_orphans.begin(), sorted_orphans.end());
         bool first = true;
-        for (const auto& orphan : orphans) {
+        for (const auto& orphan : sorted_orphans) {
             if (!first) err += ", ";
             err += "'" + orphan + "'";
             first = false;
@@ -309,17 +294,8 @@ void validate_a2ui_json(const nlohmann::json& a2ui_json, const nlohmann::json& a
         throw std::invalid_argument(std::string("Schema validation failed: ") + e.what());
     }
 
-    std::vector<nlohmann::json> messages;
-    if (a2ui_json.is_array()) {
-        for (const auto& item : a2ui_json) {
-            messages.push_back(item);
-        }
-    } else {
-        messages.push_back(a2ui_json);
-    }
-
-    for (const auto& message : messages) {
-        if (!message.is_object()) continue;
+    auto process_message = [&](const nlohmann::json& message) {
+        if (!message.is_object()) return;
 
         auto comps_it = message.find(COMPONENTS);
         if (comps_it != message.end() && comps_it->is_array()) {
@@ -329,6 +305,14 @@ void validate_a2ui_json(const nlohmann::json& a2ui_json, const nlohmann::json& a
         }
 
         _validate_recursion_and_paths(message);
+    };
+
+    if (a2ui_json.is_array()) {
+        for (const auto& item : a2ui_json) {
+            process_message(item);
+        }
+    } else {
+        process_message(a2ui_json);
     }
 }
 
