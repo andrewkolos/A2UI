@@ -71,11 +71,20 @@ window.addEventListener("message", async (event) => {
         inner.setAttribute("allow", allowAttribute);
       }
       if (typeof html === "string") {
+        const sendInit = () => {
+          if (inner.contentWindow) {
+            inner.contentWindow.postMessage({ type: "sandbox-init" }, OWN_ORIGIN);
+          }
+        };
+        inner.onload = sendInit;
+
         const doc = inner.contentDocument || inner.contentWindow?.document;
         if (doc) {
           doc.open();
           doc.write(html);
           doc.close();
+          // doc.write doesn't always trigger iframe onload reliably.
+          Promise.resolve().then(sendInit);
         } else {
           inner.srcdoc = html;
         }

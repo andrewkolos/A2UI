@@ -250,6 +250,18 @@ async def read_resource(uri: str) -> str | bytes:
             // Capture the trusted host origin from the first incoming message
             if (hostOrigin === '*' && event.source === window.parent) {
                 hostOrigin = event.origin;
+
+                // MCP Handshake AFTER getting the origin securely
+                window.parent.postMessage({
+                    jsonrpc: "2.0",
+                    id: Date.now(),
+                    method: "ui/initialize",
+                    params: {
+                        appCapabilities: {},
+                        clientInfo: { name: "Floor Plan App", version: "1.0.0" },
+                        protocolVersion: "2026-01-26"
+                    }
+                }, hostOrigin);
             }
             
             const data = event.data;
@@ -259,18 +271,6 @@ async def read_resource(uri: str) -> str | bytes:
         });
 
         createHotspots();
-        
-        // MCP Handshake
-        window.parent.postMessage({
-            jsonrpc: "2.0",
-            id: Date.now(),
-            method: "ui/initialize",
-            params: {
-                appCapabilities: {},
-                clientInfo: { name: "Floor Plan App", version: "1.0.0" },
-                protocolVersion: "2026-01-26"
-            }
-        }, hostOrigin);
     </script>
 </body>
 </html>"""
