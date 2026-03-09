@@ -2091,24 +2091,32 @@
 </ol>
 <h2 id="defining-custom-catalogs">Defining Custom Catalogs<a class="headerlink" href="#defining-custom-catalogs" title="Permanent link">&para;</a></h2>
 <p>TODO: Add detailed guide for defining custom catalogs for each platform.</p>
-<p><strong>Web (Lit / Angular):</strong>
-- How to define a catalog with both standard and custom components
-- How to register the catalog with the A2UI client
-- How to implement custom component classes</p>
-<p><strong>Flutter:</strong>
-- How to define custom catalogs using GenUI
-- How to register custom component renderers</p>
-<p><strong>See working examples:</strong>
-- <a href="https://github.com/google/a2ui/tree/main/samples/client/lit">Lit samples</a>
-- <a href="https://github.com/google/a2ui/tree/main/samples/client/angular">Angular samples</a>
-- <a href="https://docs.flutter.dev/ai/genui">Flutter GenUI docs</a></p>
+<p><strong>Web (Lit / Angular):</strong></p>
+<ul>
+<li>How to define a catalog with both standard and custom components</li>
+<li>How to register the catalog with the A2UI client</li>
+<li>How to implement custom component classes</li>
+</ul>
+<p><strong>Flutter:</strong></p>
+<ul>
+<li>How to define custom catalogs using GenUI</li>
+<li>How to register custom component renderers</li>
+</ul>
+<p><strong>See working examples:</strong></p>
+<ul>
+<li><a href="https://github.com/google/a2ui/tree/main/samples/client/lit">Lit samples</a></li>
+<li><a href="https://github.com/google/a2ui/tree/main/samples/client/angular">Angular samples</a></li>
+<li><a href="https://docs.flutter.dev/ai/genui">Flutter GenUI docs</a></li>
+</ul>
 <h2 id="agent-side-using-components-from-a-custom-catalog">Agent-Side: Using Components from a Custom Catalog<a class="headerlink" href="#agent-side-using-components-from-a-custom-catalog" title="Permanent link">&para;</a></h2>
 <p>Once a catalog is registered on the client, agents can use components from it in <code>surfaceUpdate</code> messages.</p>
 <p>The agent specifies which catalog to use via the <code>catalogId</code> in the <code>beginRendering</code> message.</p>
-<p>TODO: Add examples of:
-- How agents select catalogs
-- How agents reference custom components from catalogs
-- How catalog versioning works</p>
+<p>TODO: Add examples of:</p>
+<ul>
+<li>How agents select catalogs</li>
+<li>How agents reference custom components from catalogs</li>
+<li>How catalog versioning works</li>
+</ul>
 <h2 id="data-binding-and-actions">Data Binding and Actions<a class="headerlink" href="#data-binding-and-actions" title="Permanent link">&para;</a></h2>
 <p>Custom components support the same data binding and action mechanisms as standard components:</p>
 <ul>

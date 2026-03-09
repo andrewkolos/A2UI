@@ -1125,9 +1125,11 @@
 </span><span id="__span-0-8"><a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-0-9"><a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="p">}</span>
 </span></code></pre></div>
-<p><strong>Common <code>usageHint</code> values:</strong>
-- Text: <code>h1</code>, <code>h2</code>, <code>h3</code>, <code>h4</code>, <code>h5</code>, <code>body</code>, <code>caption</code>
-- Other components have their own hints (see <a href="../../reference/components/">Component Reference</a>)</p>
+<p><strong>Common <code>usageHint</code> values:</strong></p>
+<ul>
+<li>Text: <code>h1</code>, <code>h2</code>, <code>h3</code>, <code>h4</code>, <code>h5</code>, <code>body</code>, <code>caption</code></li>
+<li>Other components have their own hints (see <a href="../../reference/components/">Component Reference</a>)</li>
+</ul>
 <p>The client renderer maps these semantic hints to actual visual styles based on your theme and design system.</p>
 <h2 id="layer-2-theme-configuration">Layer 2: Theme Configuration<a class="headerlink" href="#layer-2-theme-configuration" title="Permanent link">¶</a></h2>
 <p>Each renderer provides a way to configure your design system globally, including:</p>
@@ -1139,26 +1141,38 @@
 <li><strong>Elevation</strong>: Shadow styles for depth</li>
 </ul>
 <p>TODO: Add platform-specific theming guides:</p>
-<p><strong>Web (Lit):</strong>
-- How to configure theme via renderer initialization
-- Available theme properties</p>
-<p><strong>Angular:</strong>
-- Integration with Angular Material theming
-- Standalone A2UI theme configuration</p>
-<p><strong>Flutter:</strong>
-- How A2UI uses Flutter's <code>ThemeData</code>
-- Custom theme properties</p>
-<p><strong>See working examples:</strong>
-- <a href="https://github.com/google/a2ui/tree/main/samples/client/lit">Lit samples</a>
-- <a href="https://github.com/google/a2ui/tree/main/samples/client/angular">Angular samples</a>
-- <a href="https://docs.flutter.dev/ai/genui">Flutter GenUI docs</a></p>
+<p><strong>Web (Lit):</strong></p>
+<ul>
+<li>How to configure theme via renderer initialization</li>
+<li>Available theme properties</li>
+</ul>
+<p><strong>Angular:</strong></p>
+<ul>
+<li>Integration with Angular Material theming</li>
+<li>Standalone A2UI theme configuration</li>
+</ul>
+<p><strong>Flutter:</strong></p>
+<ul>
+<li>How A2UI uses Flutter's <code>ThemeData</code></li>
+<li>Custom theme properties</li>
+</ul>
+<p><strong>See working examples:</strong></p>
+<ul>
+<li><a href="https://github.com/google/a2ui/tree/main/samples/client/lit">Lit samples</a></li>
+<li><a href="https://github.com/google/a2ui/tree/main/samples/client/angular">Angular samples</a></li>
+<li><a href="https://docs.flutter.dev/ai/genui">Flutter GenUI docs</a></li>
+</ul>
 <h2 id="layer-3-component-overrides">Layer 3: Component Overrides<a class="headerlink" href="#layer-3-component-overrides" title="Permanent link">¶</a></h2>
 <p>Beyond global theming, you can override styles for specific components:</p>
-<p><strong>Web renderers:</strong>
-- CSS custom properties (CSS variables) for fine-grained control
-- Standard CSS selectors for component-specific overrides</p>
-<p><strong>Flutter:</strong>
-- Widget-specific theme overrides via <code>ThemeData</code></p>
+<p><strong>Web renderers:</strong></p>
+<ul>
+<li>CSS custom properties (CSS variables) for fine-grained control</li>
+<li>Standard CSS selectors for component-specific overrides</li>
+</ul>
+<p><strong>Flutter:</strong></p>
+<ul>
+<li>Widget-specific theme overrides via <code>ThemeData</code></li>
+</ul>
 <p>TODO: Add detailed component override examples for each platform.</p>
 <h2 id="common-styling-features">Common Styling Features<a class="headerlink" href="#common-styling-features" title="Permanent link">¶</a></h2>
 <h3 id="dark-mode">Dark Mode<a class="headerlink" href="#dark-mode" title="Permanent link">¶</a></h3>

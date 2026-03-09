@@ -2715,7 +2715,7 @@
 </ol>
 <h3 id="action-wiring-in-schema">Action Wiring in Schema<a class="headerlink" href="#action-wiring-in-schema" title="Permanent link">&para;</a></h3>
 <p>Components like <code>Button</code> expose an <code>action</code> property. Here is how a server event is wired:</p>
-<p><div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;submit-btn&quot;</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">&quot;component&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Button&quot;</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">&quot;child&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;btn-text&quot;</span><span class="p">,</span>
@@ -2730,8 +2730,10 @@
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">}</span>
 </span></code></pre></div>
-- <strong><code>name</code></strong>: A stable identifier for the agent to switch on.
-- <strong><code>context</code></strong>: A map of key-value pairs. Values can be literal or use a <code>path</code> to pull from the current state of the data model. </p>
+<ul>
+<li><strong><code>name</code></strong>: A stable identifier for the agent to switch on.</li>
+<li><strong><code>context</code></strong>: A map of key-value pairs. Values can be literal or use a <code>path</code> to pull from the current state of the data model. </li>
+</ul>
 <div class="admonition note">
 <p><strong>Context vs. Data Model</strong>: While the Data Model represents the entire state tree of a surface, the <code>context</code> in an action is effectively a hand-picked <strong>"view"</strong> or subset of that state. This simplifies the Agent's job by providing exactly the values needed for a specific event, without requiring the Agent to navigate a potentially large and complex data model.</p>
 </div>

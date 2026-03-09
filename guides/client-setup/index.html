@@ -2235,29 +2235,37 @@ coming days.</p>
 <p>Flutter uses the GenUI SDK which provides native A2UI rendering.</p>
 <p><strong>Docs:</strong> <a href="https://docs.flutter.dev/ai/genui">GenUI SDK</a> | <a href="https://github.com/flutter/genui">GitHub</a> | <a href="https://github.com/flutter/genui/blob/main/packages/genui/README.md#getting-started-with-genui">README in GenUI Flutter Package</a></p>
 <h2 id="connecting-to-agents">Connecting to Agents<a class="headerlink" href="#connecting-to-agents" title="Permanent link">&para;</a></h2>
-<p>Your client application needs to:
-1. <strong>Receive A2UI messages</strong> from the agent (via transport)
-2. <strong>Process messages</strong> using the Message Processor
-3. <strong>Send user actions</strong> back to the agent</p>
-<p>Common transport options:
-- <strong>Server-Sent Events (SSE)</strong>: One-way streaming from server to client
-- <strong>WebSockets</strong>: Bidirectional real-time communication
-- <strong>A2A Protocol</strong>: Standardized agent-to-agent communication with A2UI support</p>
+<p>Your client application needs to:</p>
+<ol>
+<li><strong>Receive A2UI messages</strong> from the agent (via transport)</li>
+<li><strong>Process messages</strong> using the Message Processor</li>
+<li><strong>Send user actions</strong> back to the agent</li>
+</ol>
+<p>Common transport options:</p>
+<ul>
+<li><strong>Server-Sent Events (SSE)</strong>: One-way streaming from server to client</li>
+<li><strong>WebSockets</strong>: Bidirectional real-time communication</li>
+<li><strong>A2A Protocol</strong>: Standardized agent-to-agent communication with A2UI support</li>
+</ul>
 <p>TODO: Add transport implementation examples.</p>
 <p><strong>See:</strong> <a href="../../transports/">Transports guide</a></p>
 <h2 id="handling-user-actions">Handling User Actions<a class="headerlink" href="#handling-user-actions" title="Permanent link">&para;</a></h2>
-<p>When users interact with A2UI components (clicking buttons, submitting forms, etc.), the client:
-1. Captures the action event from the component
-2. Resolves any data context needed for the action
-3. Sends the action to the agent
-4. Processes the agent's response messages</p>
+<p>When users interact with A2UI components (clicking buttons, submitting forms, etc.), the client:</p>
+<ol>
+<li>Captures the action event from the component</li>
+<li>Resolves any data context needed for the action</li>
+<li>Sends the action to the agent</li>
+<li>Processes the agent's response messages</li>
+</ol>
 <p>TODO: Add action handling examples.</p>
 <h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
-<p>Common errors to handle:
-- <strong>Invalid Surface ID</strong>: Surface referenced before <code>beginRendering</code> (v0.8) or <code>createSurface</code> (v0.9) was received
-- <strong>Invalid Component ID</strong>: Component IDs must be unique within a surface
-- <strong>Invalid Data Path</strong>: Check data model structure and JSON Pointer syntax
-- <strong>Schema Validation Failed</strong>: Verify message format matches A2UI specification</p>
+<p>Common errors to handle:</p>
+<ul>
+<li><strong>Invalid Surface ID</strong>: Surface referenced before <code>beginRendering</code> (v0.8) or <code>createSurface</code> (v0.9) was received</li>
+<li><strong>Invalid Component ID</strong>: Component IDs must be unique within a surface</li>
+<li><strong>Invalid Data Path</strong>: Check data model structure and JSON Pointer syntax</li>
+<li><strong>Schema Validation Failed</strong>: Verify message format matches A2UI specification</li>
+</ul>
 <p>TODO: Add error handling examples.</p>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <ul>
