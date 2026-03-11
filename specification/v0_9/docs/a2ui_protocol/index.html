@@ -1853,7 +1853,7 @@ AG UI provides convenient integrations into many agent frameworks and frontends.
 </span><span id="__span-12-10"><a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="client-to-server-updates">Client to server updates<a class="headerlink" href="#client-to-server-updates" title="Permanent link">¶</a></h3>
-<p>When <code>sendDataModel</code> is set to <code>true</code> for a surface, the client automatically appends the <strong>entire data model</strong> of that surface to the metadata of every message (such as <code>action</code> or user query) sent to the server that created the surface. The data model is included using the transport's metadata facility (e.g., the <code>metadata</code> field in A2A or a header in HTTP). The payload follows the schema in <a href="../../json/a2ui_client_data_model.json"><code>a2ui_client_data_model.json</code></a>.</p>
+<p>When <code>sendDataModel</code> is set to <code>true</code> for a surface, the client automatically appends the <strong>entire data model</strong> of that surface to the metadata of every message (such as <code>action</code> or user query) sent to the server that created the surface. The data model is included using the transport's metadata facility (e.g., the <code>metadata</code> field in A2A or a header in HTTP). The payload follows the schema in <a href="../../json/client_data_model.json"><code>client_data_model.json</code></a>.</p>
 <ul>
 <li><strong>Targeted Delivery</strong>: The data model is sent exclusively to the server that created the surface. Data cannot leak to other agents or servers.</li>
 <li><strong>Trigger:</strong> Data is sent only when a client-to-server message is triggered (e.g., by a user action like a button click). Passive data changes (like typing in a text field) do not trigger a network request on their own; they simply update the local state, which will be sent with the next action.</li>
@@ -2198,14 +2198,14 @@ AG UI provides convenient integrations into many agent frameworks and frontends.
 <h4 id="server-capabilities">Server capabilities<a class="headerlink" href="#server-capabilities" title="Permanent link">¶</a></h4>
 <p>A server (or agent) advertises its capabilities using the [<code>server_capabilities.json</code>] schema. This indicates which catalogs it can generate UI for, and whether it accepts inline catalogs from the client. The exact mechanism depends on the transport (e.g., the <code>params</code> object in an A2A AgentCard, or server capabilities in MCP).</p>
 <h4 id="client-capabilities">Client capabilities<a class="headerlink" href="#client-capabilities" title="Permanent link">¶</a></h4>
-<p>The <code>a2uiClientCapabilities</code> object in the metadata follows the [<code>a2ui_client_capabilities.json</code>] schema.</p>
+<p>The <code>a2uiClientCapabilities</code> object in the metadata follows the [<code>client_capabilities.json</code>] schema.</p>
 <p><strong>Properties:</strong></p>
 <ul>
 <li><code>supportedCatalogIds</code> (array of strings, required): URIs of supported catalogs.</li>
 <li><code>inlineCatalogs</code>: An array of inline catalog definitions provided directly by the client (useful for custom or ad-hoc components and functions).</li>
 </ul>
 <h4 id="client-data-model">Client data model<a class="headerlink" href="#client-data-model" title="Permanent link">¶</a></h4>
-<p>When <code>sendDataModel</code> is enabled for a surface, the client includes the <code>a2uiClientDataModel</code> object in the metadata, following the [<code>a2ui_client_data_model.json</code>] schema.</p>
+<p>When <code>sendDataModel</code> is enabled for a surface, the client includes the <code>a2uiClientDataModel</code> object in the metadata, following the [<code>client_data_model.json</code>] schema.</p>
 <p><strong>Properties:</strong></p>
 <ul>
 <li><code>surfaces</code> (object, required): A map of surface IDs to their current data models.</li>
