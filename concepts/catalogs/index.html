@@ -2654,9 +2654,22 @@
 </span></code></pre></div>
 <h3 id="freestanding-catalogs">Freestanding Catalogs<a class="headerlink" href="#freestanding-catalogs" title="Permanent link">&para;</a></h3>
 <p>A2UI Catalogs must be standalone (no references to external files) to simplify LLM inference and dependency management. </p>
-<p>While the final catalog must be freestanding, you may still author your catalogs modularly using JSON Schema <code>$ref</code> pointing to external documents during local development. Run  <code>scripts/build_catalog.py</code> before distributing your catalog to bundle all external file references into a single, independent JSON Schema file:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>run<span class="w"> </span>scripts/build_catalog.py<span class="w"> </span>&lt;path-to-your-catalog.json&gt;
+<p>While the final catalog must be freestanding, you may still author your catalogs modularly using JSON Schema <code>$ref</code> pointing to external documents during local development. Run  <code>tools/build_catalog/assemble_catalog.py</code> before distributing your catalog to bundle all external file references into a single, independent JSON Schema file:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>run<span class="w"> </span>tools/build_catalog/assemble_catalog.py<span class="w"> </span><span class="o">[</span>INPUTS<span class="w"> </span>...<span class="o">]</span><span class="w"> </span>--output-name<span class="w"> </span>&lt;OUTPUT_NAME&gt;<span class="w"> </span><span class="o">[</span>--catalog-id<span class="w"> </span>&lt;ID&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--version<span class="w"> </span>&lt;VERSION&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--extend-basic-catalog<span class="o">]</span><span class="w"> </span><span class="o">[</span>--out-dir<span class="w"> </span>&lt;DIR&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--verbose<span class="o">]</span>
 </span></code></pre></div>
+<p>where:
+- <code>inputs</code>: One or more paths or URLs to A2UI component catalog JSONs.
+- <code>--output-name</code>: (Required) The desired name of the combined catalog (e.g.
+  <code>my_merged_catalog</code>). The <code>.json</code> extension is appended automatically if
+  omitted.
+- <code>--catalog-id</code>: Custom <code>catalogId</code> for the output. Defaults to <code>urn:a2ui:catalog:&lt;base_name&gt;</code>.
+- <code>--version</code>: The A2UI specification version to use for official catalog
+  fallbacks. Choices are <code>0.9</code> or <code>0.10</code>. Defaults to <code>0.9</code>.
+- <code>--extend-basic-catalog</code>: If passed, automatically includes the entirety of
+  <code>basic_catalog.json</code> in the root output regardless of whether the input
+  catalogs explicitly reference it.
+- <code>--out-dir</code>, <code>-o</code>: The directory where the assembled catalog will be saved. Defaults to <code>dist</code>.
+- <code>--verbose</code>, <code>-v</code>: If passed, enables verbose debug logging to help diagnose issues.</p>
 <h3 id="composition-imports">Composition &amp; Imports<a class="headerlink" href="#composition-imports" title="Permanent link">&para;</a></h3>
 <p>You do not have to define everything from scratch. You can define a catalog which uses existing components from the basic or other catalogs, and one that reusing the existing rendering logic.</p>
 <h4 id="example-extending-the-basic-catalog">Example: Extending the Basic Catalog<a class="headerlink" href="#example-extending-the-basic-catalog" title="Permanent link">&para;</a></h4>
@@ -2683,7 +2696,7 @@
 </span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="p">}</span>
 </span></code></pre></div>
-<p><strong>Make sure to run <code>scripts/build_catalog.py</code> to resolve the external $ref before publishing.</strong></p>
+<p><strong>Make sure to run <code>tools/build_catalog/assemble_catalog.py</code> to resolve the external $ref before publishing.</strong></p>
 <h4 id="example-cherry-picking-components">Example: Cherry-picking Components<a class="headerlink" href="#example-cherry-picking-components" title="Permanent link">&para;</a></h4>
 <p>This catalog imports only <code>Text</code> from the Basic Catalog to build a simple Popup surface.</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
@@ -2705,7 +2718,7 @@
 </span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="p">}</span>
 </span></code></pre></div>
-<p><strong>Make sure to run <code>scripts/build_catalog.py</code> to resolve the external $ref before publishing.</strong></p>
+<p><strong>Make sure to run <code>tools/build_catalog/assemble_catalog.py</code> to resolve the external $ref before publishing.</strong></p>
 <h3 id="implementing-renderers">Implementing Renderers<a class="headerlink" href="#implementing-renderers" title="Permanent link">&para;</a></h3>
 <p>Client renderers implement the catalog by mapping the schema definition to actual code.</p>
 <p>Example typescript renderer for the hello world catalog</p>
