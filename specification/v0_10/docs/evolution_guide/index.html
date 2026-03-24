@@ -1933,6 +1933,7 @@
 <h2 id="1-executive-summary">1. Executive Summary<a class="headerlink" href="#1-executive-summary" title="Permanent link">&para;</a></h2>
 <p>Version 0.10 differs from 0.9 in the following ways:</p>
 <ul>
+<li><strong>Client-to-Server RPC</strong>: Introduced <code>actionResponse</code> enabling synchronous responses to client-initiated actions. Added <code>actionId</code> for response correlation.</li>
 <li><TBD></li>
 </ul>
 <h2 id="2-changes">2. Changes<a class="headerlink" href="#2-changes" title="Permanent link">&para;</a></h2>
@@ -1942,10 +1943,12 @@
 </ul>
 <h3 id="22-server-to-client-message-list-schema">2.2. Server-to-Client Message List Schema<a class="headerlink" href="#22-server-to-client-message-list-schema" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Added <code>ActionResponseMessage</code> to allow the server to respond to a specific action call using an <code>actionId</code>.</li>
 <li><TBD></li>
 </ul>
 <h3 id="23-client-to-server-message-list-schema">2.3. Client-to-Server Message List Schema<a class="headerlink" href="#23-client-to-server-message-list-schema" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Added <code>actionId</code> to the <code>action</code> message properties, which the client generates if a response is expected (<code>wantResponse: true</code>).</li>
 <li><TBD></li>
 </ul>
 <h3 id="24-client-capabilities-schema">2.4. Client Capabilities Schema<a class="headerlink" href="#24-client-capabilities-schema" title="Permanent link">&para;</a></h3>
@@ -1966,10 +1969,13 @@
 </ul>
 <h3 id="28-server-to-client-messages">2.8. Server-to-Client Messages<a class="headerlink" href="#28-server-to-client-messages" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Added <code>actionResponse</code> message structure to support synchronous responses with a <code>value</code> or <code>error</code>.</li>
 <li><TBD></li>
 </ul>
 <h3 id="29-client-to-server-events">2.9. Client-to-Server Events<a class="headerlink" href="#29-client-to-server-events" title="Permanent link">&para;</a></h3>
 <ul>
+<li>Updated <code>action</code> message to include <code>actionId</code>.</li>
+<li>Updated <code>Action</code> type in <code>common_types.json</code> to include <code>wantResponse</code> and <code>responsePath</code> on event triggers.</li>
 <li><TBD></li>
 </ul>
 <h2 id="3-migration-guide">3. Migration Guide<a class="headerlink" href="#3-migration-guide" title="Permanent link">&para;</a></h2>
