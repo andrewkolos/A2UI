@@ -19,7 +19,7 @@ from typing import Any, ClassVar, Optional, Dict
 from a2a.types import AgentCapabilities, AgentCard, AgentSkill
 from a2ui.a2a import get_a2ui_agent_extension
 from a2ui.adk.a2a_extension.send_a2ui_to_client_toolset import A2uiEnabledProvider, A2uiCatalogProvider, A2uiExamplesProvider, SendA2uiToClientToolset
-from a2ui.core.schema.manager import A2uiSchemaManager, VERSION_0_8, CatalogConfig
+from a2ui.core.schema.manager import A2uiSchemaManager, VERSION_0_8, VERSION_0_9, CatalogConfig
 from google.adk.agents.llm_agent import LlmAgent
 from google.adk.artifacts import InMemoryArtifactService
 from google.adk.memory.in_memory_memory_service import InMemoryMemoryService
@@ -72,12 +72,17 @@ class McpAppProxyAgent:
 
     self._agent_name = "mcp_app_proxy_agent"
     self._user_id = "remote_agent"
+
+    self._session_service = InMemorySessionService()
+    self._memory_service = InMemoryMemoryService()
+    self._artifact_service = InMemoryArtifactService()
+
     self._text_runner: Optional[Runner] = self._build_runner(self._build_llm_agent())
 
     self._schema_managers: Dict[str, A2uiSchemaManager] = {}
     self._ui_runners: Dict[str, Runner] = {}
 
-    for version in [VERSION_0_8]:
+    for version in [VERSION_0_8, VERSION_0_9]:
       schema_manager = self._build_schema_manager(version)
       self._schema_managers[version] = schema_manager
       agent = self._build_llm_agent(schema_manager)
@@ -105,7 +110,7 @@ class McpAppProxyAgent:
         catalogs=[
             CatalogConfig.from_path(
                 name="mcp_app_proxy",
-                catalog_path="mcp_app_catalog.json",
+                catalog_path=f"catalogs/{version}/mcp_app_catalog.json",
             ),
         ],
         accepts_inline_catalogs=True,
@@ -150,9 +155,9 @@ class McpAppProxyAgent:
     return Runner(
         app_name=self._agent_name,
         agent=agent,
-        artifact_service=InMemoryArtifactService(),
-        session_service=InMemorySessionService(),
-        memory_service=InMemoryMemoryService(),
+        artifact_service=self._artifact_service,
+        session_service=self._session_service,
+        memory_service=self._memory_service,
     )
 
   def _build_llm_agent(
