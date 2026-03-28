@@ -46,7 +46,7 @@ SAMPLE_CONFIGS = [
         "path": SAMPLES_DIR / "custom-components-example",
         "catalogs": [
             CatalogConfig.from_path(
-                name="contact_multiple_surfaces_inline_catalog",
+                name="custom-components-example_inline_catalog",
                 catalog_path="inline_catalog_0.9.json",
                 examples_path=f"examples/{VERSION_0_9}",
             ),
