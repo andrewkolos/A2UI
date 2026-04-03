@@ -218,12 +218,14 @@ cd samples/client/angular/
 # Build the renderers (required — Angular depends on local renderer packages)
 npm run build:renderer
 
-npm install
+npm install --include=dev
 npm run build:sandbox
 npm start -- mcp_calculator
 ```
 
-> ⚠️ **`build:renderer` and `build:sandbox` are both required**: This step bundles the sandbox proxy (`sandbox.html` and `sandbox.js`) into the Angular project's public assets. Without it, the MCP app iframe won't load.
+> ⚠️ **`--include=dev` is required**: The Angular CLI (`@angular/cli`) is a dev dependency. Without `--include=dev`, `ng serve` won't be available.
+>
+> ⚠️ **`build:renderer` and `build:sandbox` are both required**: `build:renderer` compiles the A2UI renderer packages that the Angular app depends on. `build:sandbox` bundles the sandbox proxy into the Angular project's public assets. Without either, the app won't work.
 
 The client starts at `http://localhost:4200/`.
 
@@ -261,4 +263,6 @@ http://localhost:4200/?disable_security_self_test=true
 | `npm run build:renderer` fails | Make sure you ran `npm install` first in `samples/client/lit/` |
 | Angular client shows blank page | Ensure you ran `npm run build:sandbox` before `npm start` |
 | MCP app iframe doesn't load | Check that both the MCP server (port 8000) and proxy agent (port 10006) are running |
+| `ng serve` not found | Run `npm install --include=dev` to install dev dependencies including `@angular/cli` |
+| "URL with hostname not allowed" | Angular 21 restricts allowed hosts. Use `localhost` (the default) — do not pass `--host 0.0.0.0` |
 | Security self-test fails in dev | Add `?disable_security_self_test=true` to the URL |
