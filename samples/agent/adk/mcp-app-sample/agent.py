@@ -146,11 +146,17 @@ async def handle_a2a(request: Request):
         # Return a response that might update the UI or just confirm
         response_data = [
             {
+                "beginRendering": {
+                    "surfaceId": "mcp-response-surface",
+                    "root": "mcp-response-root"
+                }
+            },
+            {
                 "surfaceUpdate": {
-                    "surfaceId": "mcp-surface",
+                    "surfaceId": "mcp-response-surface",
                     "components": [
                         {
-                            "id": "mcp-app-root", # Replace the app with text or update it
+                            "id": "mcp-response-root",
                             "component": {
                                 "Text": {
                                     "text": {

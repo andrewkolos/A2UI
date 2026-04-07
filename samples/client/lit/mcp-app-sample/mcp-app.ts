@@ -54,6 +54,71 @@ export class A2UIMcpSample extends SignalWatcher(LitElement) {
         text-align: center;
         padding: 20px;
       }
+      .debug-panel {
+        margin-top: 30px;
+        padding: 16px;
+        background: #1e1e1e;
+        color: #d4d4d4;
+        border-radius: 8px;
+        font-family: monospace;
+      }
+      .debug-panel h3 {
+        margin-top: 0;
+        color: #569cd6;
+      }
+      .log-entries {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .log-entry {
+        background: #252526;
+        border-radius: 4px;
+        cursor: pointer;
+        overflow: hidden;
+      }
+      .log-entry:hover {
+        background: #2a2a2d;
+      }
+      .log-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 12px;
+        align-items: center;
+      }
+      .log-type {
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 0.8em;
+      }
+      .log-entry.sent .log-type {
+        background: #0e639c;
+        color: white;
+      }
+      .log-entry.received .log-type {
+        background: #165a2c;
+        color: white;
+      }
+      .log-summary {
+        flex: 1;
+        margin: 0 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .log-toggle {
+        font-size: 0.8em;
+      }
+      .log-detail {
+        margin: 0;
+        padding: 12px;
+        background: #1c1c1c;
+        border-top: 1px solid #333;
+        overflow-x: auto;
+        font-size: 0.9em;
+        color: #9cdcfe;
+      }
     `,
   ];
 

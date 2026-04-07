@@ -5,6 +5,7 @@
   "description": "A2UI Lit Samples",
   "workspaces": [
     "custom-components-example",
+    "mcp-app-sample",
     "shell"
   ],
   "scripts": {
