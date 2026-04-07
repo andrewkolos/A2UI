@@ -340,11 +340,11 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../concepts/client_to_server_actions/">
+<a class="md-nav__link" href="../concepts/actions/">
 <span class="md-ellipsis">
     
   
-    Client-to-Server Actions
+    Actions
   
 
     
@@ -847,6 +847,15 @@
 </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#agent-turn">
+<span class="md-ellipsis">
+      
+        Agent turn
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#data-model">
 <span class="md-ellipsis">
       
@@ -941,7 +950,7 @@
 <p>In case the agent is stateless or does not guarantee to preserve the catalog, the renderer should provide the catalog with every message.</p>
 <p>And, sometimes, an agent is using a predefined catalog, thus forcing the renderers to either support this catalog or use an adapter. </p>
 <h3 id="genui-component">GenUI Component<a class="headerlink" href="#genui-component" title="Permanent link">¶</a></h3>
-<p>UI component, allowed for use by AI. Examples: date picker, carousel, button, hotel selector.</p>
+<p>UI component, allowed for use by agent. Examples: date picker, carousel, button, hotel selector.</p>
 <h3 id="catalog">Catalog<a class="headerlink" href="#catalog" title="Permanent link">¶</a></h3>
 <ol>
 <li>Itemized renderer capabilities:<ul>
@@ -1011,7 +1020,7 @@ which consists of a number of components. Surfaces cannot nest.</p>
 </ul>
 <p>Code that implements the execution of the agent’s instructions in a concrete framework. For example:</p>
 <ul>
-<li>JavaScript core and catalogs may be adapted to Angular, Electron and Lit frameworks.</li>
+<li>JavaScript core and catalogs may be adapted to Angular, Electron, React and Lit frameworks.</li>
 <li>Dart core and catalogs may be adapted to Flutter and Jaspr frameworks.</li>
 </ul>
 <p>See <a href="https://github.com/google/A2UI/tree/main/renderers/angular/README.md">Angular adapter</a>.</p>
@@ -1032,6 +1041,8 @@ fadapter--&gt;core;</code></pre>
 <p>A message between agent and renderer.</p>
 <p>As the protocol allows streaming, any message can be finished (completely delivered) or not finished (partially delivered). A finished message may be completed (successfully delivered) or interrupted (delivery stopped because of some technical issues).</p>
 <p>See <a href="https://github.com/google/A2UI/blob/main/docs/concepts/data-flow.md">data flow</a>.</p>
+<h3 id="agent-turn">Agent turn<a class="headerlink" href="#agent-turn" title="Permanent link">¶</a></h3>
+<p>Set of messages sent by agent, before it starts waiting for user input.</p>
 <h3 id="data-model">Data model<a class="headerlink" href="#data-model" title="Permanent link">¶</a></h3>
 <p>Observable, hierarchical, JSON-like object, shared between renderer and agent and updatable by both. Each Surface has a separate Data Model.</p>
 <p>Components can be bound to nodes of the data model, in order to auto-update when the values are changed.</p>
@@ -1041,7 +1052,7 @@ fadapter--&gt;core;</code></pre>
 <p>In component definition, a reference to a data element, resolvable either by path in the data model or by value.</p>
 <p>See <a href="https://github.com/google/A2UI/blob/db1fbe726b8d464f8f8493d9991cf0c6e4f8499d/specification/v0_10/json/basic_catalog.json#L18">example in basic catalog</a>.</p>
 <h3 id="client-function">Client function<a class="headerlink" href="#client-function" title="Permanent link">¶</a></h3>
-<p>A function provided for AI to invoke when needed.</p>
+<p>A function provided for agent to invoke when needed.</p>
 <p>Do not confuse with LLM tool:</p>
 <table>
 <thead>
@@ -1081,9 +1092,9 @@ fadapter--&gt;core;</code></pre>
 </table>
 <p>See <a href="https://github.com/google/A2UI/blob/main/specification/v0_9/json/common_types.json#L200">example</a>.</p>
 <h3 id="action">Action<a class="headerlink" href="#action" title="Permanent link">¶</a></h3>
-<p>A string that explains to the AI what should be done.</p>
+<p>A string that explains to the agent what should be done.</p>
 <p>It may be an alias (like “option1”) or detailed explanation (like “order three pounds of ice cream of different flavors for a kids party”).</p>
-<p>See <a href="https://github.com/google/A2UI/blob/main/docs/concepts/client_to_server_actions.md">detailed guide on actions</a>.</p>
+<p>See <a href="https://github.com/google/A2UI/blob/main/docs/concepts/actions.md">detailed guide on actions</a>.</p>
 <h2 id="generative-ui-terms">Generative UI terms<a class="headerlink" href="#generative-ui-terms" title="Permanent link">¶</a></h2>
 <p>Terms, not required by A2UI protocol, but commonly used in the context of generative UI.</p>
 <h3 id="known-patterns-of-genui">Known patterns of GenUI<a class="headerlink" href="#known-patterns-of-genui" title="Permanent link">¶</a></h3>
@@ -1106,7 +1117,7 @@ fadapter--&gt;core;</code></pre>
 <h3 id="noai-information">NoAI information<a class="headerlink" href="#noai-information" title="Permanent link">¶</a></h3>
 <p>Information, categorized as <strong>not accessible by AI</strong> (for example, credit card information).</p>
 <p>Which information should not be accessible by AI is defined by owners of the application and it is <strong>different in different contexts</strong>. For example, in some contexts medical history should never go to AI, while in others AI is heavily used to help with medical diagnostics and thus needs medical history.</p>
-<p>This term is important in GenUI context, because end users want to <strong>clearly see</strong> what their input is allowed to go to AI and which is not allowed.</p>
+<p>This term is important in the GenUI context, because end users want to <strong>clearly see</strong> what their input is allowed to go to the AI and what is not allowed.</p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>

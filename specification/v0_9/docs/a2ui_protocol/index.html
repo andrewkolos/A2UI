@@ -340,11 +340,11 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../../concepts/client_to_server_actions/">
+<a class="md-nav__link" href="../../../../concepts/actions/">
 <span class="md-ellipsis">
     
   
-    Client-to-Server Actions
+    Actions
   
 
     
@@ -1733,6 +1733,9 @@ AG UI provides convenient integrations into many agent frameworks and frontends.
 <p>This section describes how UI components <strong>represent</strong> and reference data from the Data Model. A2UI relies on a strictly defined relationship between the UI structure (Components) and the state (Data Model), defining the mechanics of path resolution, variable scope during iteration.</p>
 <h3 id="path-resolution-scope">Path resolution &amp; scope<a class="headerlink" href="#path-resolution-scope" title="Permanent link">¶</a></h3>
 <p>Data bindings in A2UI are defined using <strong>JSON Pointers</strong> (<a href="https://datatracker.ietf.org/doc/html/rfc6901">RFC 6901</a>). How a pointer is resolved depends on the current <strong>Evaluation Scope</strong>.</p>
+<div class="admonition note">
+<p>A2UI extends JSON Pointer to support <strong>Relative Paths</strong> that do not start with a forward slash <code>/</code>. This is a deviation from strict RFC 6901 to support template-based list rendering.</p>
+</div>
 <blockquote>
 <p><strong>Note on progressive rendering:</strong> During the initial streaming phase, data paths may resolve to <code>undefined</code> if the <code>updateDataModel</code> message containing that data has not yet arrived. Renderers should handle <code>undefined</code> values gracefully (e.g., by treating them as empty strings or showing a loading indicator) to support progressive rendering.</p>
 </blockquote>
