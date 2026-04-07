@@ -117,7 +117,6 @@ window.addEventListener("message", async (event) => {
       }
     }
   } else if (event.source === inner.contentWindow) {
-    console.log("[SandboxProxy] Received message from inner iframe:", event.data);
     if (event.origin !== OWN_ORIGIN) {
       console.error(
         "[Sandbox] Rejecting message from inner iframe with unexpected origin:",
