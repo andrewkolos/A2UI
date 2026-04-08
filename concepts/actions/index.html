@@ -2827,10 +2827,10 @@
 <h1 id="handling-user-actions">Handling User Actions<a class="headerlink" href="#handling-user-actions" title="Permanent link">&para;</a></h1>
 <p>This guide explains how A2UI handles user interactions. Components use the <code>action</code> property to trigger either local <strong>Functions</strong> (executed on the renderer) or <strong>Events</strong> (dispatched to the agent). In addition, <strong>Data Model Synchronization</strong> ensures the agent always has access to the full UI state, enabling seamless multi-modal interactions like voice commands. This design enables highly responsive interfaces while maintaining a secure, restricted environment.</p>
 <h2 id="action-architecture">Action Architecture<a class="headerlink" href="#action-architecture" title="Permanent link">&para;</a></h2>
-<p>Actions allow UI components to trigger behavior defined in the <a href="../../specification/v0_9/json/common_types.json#L271-L313"><code>Action</code></a> schema in <code>common_types.json</code>. Actions can trigger:</p>
+<p>Actions allow UI components to trigger behavior defined in the <a href="https://github.com/google/A2UI/blob/main/specification/v0_9/json/common_types.json#L271-L313"><code>Action</code></a> schema in <code>common_types.json</code>. Actions can trigger:</p>
 <ol>
 <li><strong>Events</strong>: Dispatched to the Agent for processing (executed on Agent, e.g., clicking "Submit").</li>
-<li><strong>Functions</strong>: Executed entirely on the renderer using <a href="../../specification/v0_9/json/common_types.json#L200-L242"><code>FunctionCall</code></a> (executed on Renderer, e.g., opening a URL).</li>
+<li><strong>Functions</strong>: Executed entirely on the renderer using <a href="https://github.com/google/A2UI/blob/main/specification/v0_9/json/common_types.json#L200-L242"><code>FunctionCall</code></a> (executed on Renderer, e.g., opening a URL).</li>
 </ol>
 <h3 id="1-functions-local">1. Functions (Local)<a class="headerlink" href="#1-functions-local" title="Permanent link">&para;</a></h3>
 <p>Functions execute immediate behavior on the renderer without a network round-trip. The agent is not informed of local function calls. They use the <code>functionCall</code> keyword.</p>
@@ -2873,7 +2873,7 @@
 </ul>
 <p>NOTE: <strong>Context vs. Data Model</strong>: While the Data Model represents the entire state tree of a surface, the <code>context</code> in an action is effectively a hand-picked <strong>"view"</strong> or subset of that state. This simplifies the Agent's job by providing exactly the values needed for a specific event, without requiring the Agent to navigate a potentially large and complex data model.</p>
 <h3 id="basic-catalog-function-validation-checks">Basic Catalog Function Validation (Checks)<a class="headerlink" href="#basic-catalog-function-validation-checks" title="Permanent link">&para;</a></h3>
-<p>The basic catalog defines a limited set of checks that can be performed on the renderer. Interactive components can define a list of <code>checks</code> (using the <a href="../../specification/v0_9/json/common_types.json#L258-L270"><code>Checkable</code></a> schema in <code>common_types.json</code>). For a <code>Button</code>, if any check fails, the button is <strong>automatically disabled</strong> on the renderer.</p>
+<p>The basic catalog defines a limited set of checks that can be performed on the renderer. Interactive components can define a list of <code>checks</code> (using the <a href="https://github.com/google/A2UI/blob/main/specification/v0_9/json/common_types.json#L258-L270"><code>Checkable</code></a> schema in <code>common_types.json</code>). For a <code>Button</code>, if any check fails, the button is <strong>automatically disabled</strong> on the renderer.</p>
 <ul>
 <li><strong>UX Focus</strong>: Validation checks are designed to manage <strong>UI State (User Experience)</strong> by preventing invalid interactions before they happen. They are not a replacement for <strong>Data Integrity</strong> checks, which must still be performed on the agent.</li>
 </ul>
@@ -2914,7 +2914,7 @@
 <p>When a user interacts with a component (e.g., clicks a button):</p>
 <ol>
 <li><strong>Resolve</strong>: The renderer resolves all <code>path</code> references in the <code>context</code> against the local <strong>Data Model</strong>.</li>
-<li><strong>Construct</strong>: The renderer builds an <code>action</code> payload conforming to <a href="../../specification/v0_9/json/client_to_server.json"><code>client_to_server.json</code></a>.</li>
+<li><strong>Construct</strong>: The renderer builds an <code>action</code> payload conforming to <a href="https://github.com/google/A2UI/blob/main/specification/v0_9/json/client_to_server.json"><code>client_to_server.json</code></a>.</li>
 <li><strong>Dispatch</strong>: The payload is sent via the chosen transport (e.g., A2A, WebSockets).</li>
 </ol>
 <h3 id="example-the-action-payload-v09">Example: The Action Payload (v0.9)<a class="headerlink" href="#example-the-action-payload-v09" title="Permanent link">&para;</a></h3>
@@ -2945,7 +2945,7 @@
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">llm</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="renderer-to-agent-error-reporting">Renderer-to-Agent Error Reporting<a class="headerlink" href="#renderer-to-agent-error-reporting" title="Permanent link">&para;</a></h2>
-<p>In addition to Events triggered by the user, the renderer can report system-level errors back to the agent using the <code>error</code> payload defined in <a href="../../specification/v0_9/json/client_to_server.json"><code>client_to_server.json</code></a>.</p>
+<p>In addition to Events triggered by the user, the renderer can report system-level errors back to the agent using the <code>error</code> payload defined in <a href="https://github.com/google/A2UI/blob/main/specification/v0_9/json/client_to_server.json"><code>client_to_server.json</code></a>.</p>
 <h3 id="validation-failures">Validation Failures<a class="headerlink" href="#validation-failures" title="Permanent link">&para;</a></h3>
 <p>If the agent sends A2UI JSON that violates the catalog schema or protocol rules, the renderer sends a <code>VALIDATION_FAILED</code> error. This is a critical feedback loop for agentic systems:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
