@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import fs from 'fs';
 import { plugin as a2aPlugin } from './middleware/a2a';
 import { SANDBOX_BASE_PATH } from "./ui/shared-constants.js";
 
@@ -32,9 +33,11 @@ export default defineConfig({
     }
   },
   server: {
+    host: '0.0.0.0',
     fs: {
       allow: [
         resolve(__dirname, '.'),
+        resolve(__dirname, '../node_modules'),
         resolve(__dirname, '../../shared'),
         resolve(__dirname, '../../../../renderers/lit')
       ]

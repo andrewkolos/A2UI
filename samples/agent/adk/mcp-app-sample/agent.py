@@ -2,12 +2,21 @@ import os
 import json
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Minimal HTML for the MCP app showing 2-way communication
 # It uses the AppBridge to call a tool on the host.
@@ -29,48 +38,53 @@ MCP_APP_HTML = """
     <button id="actionBtn">Call Agent Tool</button>
     <div id="status"></div>
 
-    <script>
-        let hostOrigin = '*';
+    <script type="importmap">
+    {
+      "imports": {
+        "@modelcontextprotocol/sdk/types.js": "http://127.0.0.1:5173/@fs/Users/mandard/work/agents/a2ui/samples/client/lit/node_modules/@modelcontextprotocol/sdk/dist/esm/types.js",
+        "@modelcontextprotocol/sdk/shared/protocol.js": "http://127.0.0.1:5173/@fs/Users/mandard/work/agents/a2ui/samples/client/lit/node_modules/@modelcontextprotocol/sdk/dist/esm/shared/protocol.js"
+      }
+    }
+    </script>
+    <script type="module">
+        import { App as AppBridge } from 'http://127.0.0.1:5173/@fs/Users/mandard/work/agents/a2ui/samples/client/lit/node_modules/@modelcontextprotocol/ext-apps/dist/src/app-with-deps.js';
 
-        window.addEventListener('message', (event) => {
-            // Capture the trusted host origin from the first incoming message
-            if (hostOrigin === '*' && event.source === window.parent) {
-                hostOrigin = event.origin;
+        const bridge = new AppBridge({ name: "mcp-app-sample", version: "1.0.0" });
 
-                // MCP Handshake AFTER getting the origin securely
-                window.parent.postMessage({
-                    jsonrpc: "2.0",
-                    id: Date.now(),
-                    method: "ui/initialize",
-                    params: {
-                        appCapabilities: {},
-                        clientInfo: { name: "Sample App", version: "1.0.0" },
-                        protocolVersion: "2026-01-26"
+        async function init() {
+            const statusEl = document.getElementById('status');
+            console.log("[MCP App Iframe] init() started");
+            statusEl.innerText = "Initializing bridge...";
+            try {
+                console.log("[MCP App Iframe] Calling bridge.connect()...");
+                await bridge.connect();
+                console.log("[MCP App Iframe] bridge.connect() resolved!");
+                statusEl.innerText = "Connected to host!";
+
+                document.getElementById('actionBtn').addEventListener('click', async () => {
+                    console.log("[MCP App Iframe] Button clicked!");
+                    statusEl.innerText = "Calling tool...";
+                    try {
+                        console.log("[MCP App Iframe] Calling bridge.callServerTool...");
+                        const res = await bridge.callServerTool({
+                            name: "trigger_agent_action",
+                            arguments: { foo: 'bar' }
+                        });
+                        console.log("[MCP App Iframe] Tool response:", res);
+                        statusEl.innerText = "Tool response received!";
+                    } catch (err) {
+                        console.error("[MCP App Iframe] Tool error:", err);
+                        statusEl.innerText = "Error: " + err.message;
                     }
-                }, hostOrigin);
-            }
-            
-            const data = event.data;
-            // Handle updates from model context if needed
-            if (data && data.method === 'ui/updateModelContext') {
-                 if (data.params && data.params.text) {
-                     document.getElementById('val').innerText = data.params.text.content || "Updated";
-                 }
-            }
-        });
+                });
 
-        document.getElementById('actionBtn').addEventListener('click', async () => {
-            document.getElementById('status').innerText = "Calling tool...";
-            window.parent.postMessage({
-                jsonrpc: "2.0",
-                id: Date.now(),
-                method: "tools/call",
-                params: {
-                    name: "trigger_agent_action",
-                    arguments: { foo: 'bar' }
-                }
-            }, hostOrigin);
-        });
+            } catch (err) {
+                console.error("[MCP App Iframe] Connection failed:", err);
+                statusEl.innerText = "Connection failed: " + err.message;
+            }
+        }
+
+        init();
     </script>
 </body>
 </html>
@@ -196,6 +210,8 @@ async def handle_a2a(request: Request):
             }
         }
     })
+
+
 
 @app.get("/.well-known/agent-card.json")
 async def handle_card():
