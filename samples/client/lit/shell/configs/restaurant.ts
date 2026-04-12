@@ -53,5 +53,5 @@ export const config: AppConfig = {
     "Looking for open tables...",
     "Almost there...",
   ],
-  serverUrl: "http://localhost:10002",
+  serverUrl: (import.meta as any).env?.VITE_RESTAURANT_AGENT_URL || "http://localhost:10002",
 };

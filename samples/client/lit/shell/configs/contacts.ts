@@ -341,6 +341,6 @@ export const config: AppConfig = {
     "Verifying information...",
     "Just a moment...",
   ],
-  serverUrl: "http://localhost:10003",
+  serverUrl: (import.meta as any).env?.VITE_CONTACTS_AGENT_URL || "http://localhost:10003",
   theme,
 };
