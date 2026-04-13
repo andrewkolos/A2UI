@@ -522,7 +522,7 @@ export class A2uiMessageProcessor implements MessageProcessor {
           visited,
           dataContextPath,
           idSuffix,
-          key === 'action'
+          key === "action"
         );
       }
     }
@@ -792,7 +792,7 @@ export class A2uiMessageProcessor implements MessageProcessor {
 
     // 2. If it's a ComponentArrayReference (e.g., a `children` property),
     //    resolve the list and return an array of nodes.
-    if (isComponentArrayReference(value)) {
+    if (!isInsideAction && isComponentArrayReference(value)) {
       if (value.explicitList) {
         return value.explicitList.map((id) =>
           this.buildNodeRecursive(
@@ -897,7 +897,7 @@ export class A2uiMessageProcessor implements MessageProcessor {
           visited,
           dataContextPath,
           idSuffix,
-          isInsideAction,
+          isInsideAction || key === "action",
         );
       }
       return newObj;
