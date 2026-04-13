@@ -522,6 +522,7 @@ export class A2uiMessageProcessor implements MessageProcessor {
           visited,
           dataContextPath,
           idSuffix,
+          key === 'action'
         );
       }
     }
@@ -776,9 +777,10 @@ export class A2uiMessageProcessor implements MessageProcessor {
     visited: Set<string>,
     dataContextPath: string,
     idSuffix = "",
+    isInsideAction = false,
   ): ResolvedValue {
     // 1. If it's a string that matches a component ID, build that node.
-    if (typeof value === "string" && surface.components.has(value)) {
+    if (!isInsideAction && typeof value === "string" && surface.components.has(value)) {
       return this.buildNodeRecursive(
         value,
         surface,
@@ -865,6 +867,7 @@ export class A2uiMessageProcessor implements MessageProcessor {
           visited,
           dataContextPath,
           idSuffix,
+          isInsideAction,
         ),
       );
     }
@@ -894,6 +897,7 @@ export class A2uiMessageProcessor implements MessageProcessor {
           visited,
           dataContextPath,
           idSuffix,
+          isInsideAction,
         );
       }
       return newObj;
