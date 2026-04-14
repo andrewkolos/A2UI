@@ -143,10 +143,11 @@ This sample demonstrates how to integrate an MCP App within the A2UI environment
 
 #### Step 1: Start the Client Dev Server
 
-Navigate to the client sample directory and start the Vite server:
+Navigate to the client sample directory, install dependencies, and start the Vite server:
 
 ```bash
 cd samples/client/lit/mcp-apps-in-a2ui-sample
+npm install
 npm run dev
 ```
 
