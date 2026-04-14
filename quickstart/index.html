@@ -644,10 +644,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-3-navigate-to-the-lit-client" class="md-nav__link">
+  <a href="#step-3-navigate-to-the-lit-client-samples-directory" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 3: Navigate to the Lit Client
+        Step 3: Navigate to the Lit Client Samples Directory
       
     </span>
   </a>
@@ -728,10 +728,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#contact-lookup-demo" class="md-nav__link">
+  <a href="#other-languages-and-frameworks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Contact Lookup Demo
+        Other Languages and Frameworks
       
     </span>
   </a>
@@ -2237,10 +2237,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-3-navigate-to-the-lit-client" class="md-nav__link">
+  <a href="#step-3-navigate-to-the-lit-client-samples-directory" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 3: Navigate to the Lit Client
+        Step 3: Navigate to the Lit Client Samples Directory
       
     </span>
   </a>
@@ -2321,10 +2321,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#contact-lookup-demo" class="md-nav__link">
+  <a href="#other-languages-and-frameworks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Contact Lookup Demo
+        Other Languages and Frameworks
       
     </span>
   </a>
@@ -2493,13 +2493,13 @@
 <p>Export your Gemini API key as an environment variable:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GEMINI_API_KEY</span><span class="o">=</span><span class="s2">&quot;your_gemini_api_key_here&quot;</span>
 </span></code></pre></div>
-<h2 id="step-3-navigate-to-the-lit-client">Step 3: Navigate to the Lit Client<a class="headerlink" href="#step-3-navigate-to-the-lit-client" title="Permanent link">&para;</a></h2>
+<h2 id="step-3-navigate-to-the-lit-client-samples-directory">Step 3: Navigate to the Lit Client Samples Directory<a class="headerlink" href="#step-3-navigate-to-the-lit-client-samples-directory" title="Permanent link">&para;</a></h2>
+<p>The client application source code is located in <code>samples/client/lit/shell</code>. Navigate to the parent samples directory to run the demo:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>samples/client/lit
 </span></code></pre></div>
 <h2 id="step-4-install-and-run">Step 4: Install and Run<a class="headerlink" href="#step-4-install-and-run" title="Permanent link">&para;</a></h2>
 <p>Run the one-command demo launcher:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>npm<span class="w"> </span>install
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>npm<span class="w"> </span>run<span class="w"> </span>demo:all
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>npm<span class="w"> </span>run<span class="w"> </span>demo:restaurant
 </span></code></pre></div>
 <p>This command will:</p>
 <ol>
@@ -2603,11 +2603,11 @@
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>npm<span class="w"> </span>start<span class="w"> </span>--<span class="w"> </span>gallery
 </span></code></pre></div>
 <p>This runs a client-only demo showcasing every standard component (Card, Button, TextField, Timeline, etc.) with live examples and code samples.</p>
-<h3 id="contact-lookup-demo">Contact Lookup Demo<a class="headerlink" href="#contact-lookup-demo" title="Permanent link">&para;</a></h3>
-<p>Try a different agent use case:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>npm<span class="w"> </span>run<span class="w"> </span>demo:contact
-</span></code></pre></div>
-<p>This demonstrates a contact lookup agent that generates search forms and result lists.</p>
+<h3 id="other-languages-and-frameworks">Other Languages and Frameworks<a class="headerlink" href="#other-languages-and-frameworks" title="Permanent link">&para;</a></h3>
+<p>While this guide uses the Lit client as an example, A2UI provides samples for other popular frameworks in the <code>samples/client</code> directory:
+- <strong>Angular</strong>: <code>samples/client/angular</code>
+- <strong>React</strong>: <code>samples/client/react</code></p>
+<p>Explore the <a href="https://github.com/google/A2UI/blob/main/samples/client">samples/client</a> directory to see all available client implementations.</p>
 <h2 id="whats-next">What's Next?<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
 <p>Now that you've seen A2UI in action, you're ready to:</p>
 <ul>
@@ -2630,19 +2630,19 @@
 <p>If you see <code>ERR_CONNECTION_REFUSED</code> errors when the browser opens, <strong>don't worry</strong> — this is a known race condition (<a href="https://github.com/google/A2UI/issues/587">#587</a>). The web app starts faster than the Python agent backend. Just wait a few seconds and refresh the page.</p>
 <h3 id="python-uv-issues">Python / uv Issues<a class="headerlink" href="#python-uv-issues" title="Permanent link">&para;</a></h3>
 <p>The demo agents require <a href="https://docs.astral.sh/uv/">uv</a> to run. If you see <code>uv: command not found</code>:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Install uv</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># Verify</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>uv<span class="w"> </span>--version
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Install uv</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># Verify</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>uv<span class="w"> </span>--version
 </span></code></pre></div>
 <p>If you encounter other Python errors:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Make sure Python 3.10+ is available</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>python3<span class="w"> </span>--version
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># Try running the agent manually</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nb">cd</span><span class="w"> </span>samples/agent/adk/restaurant_finder
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>uv<span class="w"> </span>run<span class="w"> </span>.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Make sure Python 3.10+ is available</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>python3<span class="w"> </span>--version
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># Try running the agent manually</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="nb">cd</span><span class="w"> </span>samples/agent/adk/restaurant_finder
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>uv<span class="w"> </span>run<span class="w"> </span>.
 </span></code></pre></div>
 <h3 id="still-having-issues">Still Having Issues?<a class="headerlink" href="#still-having-issues" title="Permanent link">&para;</a></h3>
 <ul>
