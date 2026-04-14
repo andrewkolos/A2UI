@@ -1026,34 +1026,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Web Components (Lit)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#building-from-source" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Building from Source
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Setup
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2175,34 +2147,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Web Components (Lit)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#building-from-source" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Building from Source
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Setup
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2404,7 +2348,7 @@
 <td><strong><a href="https://github.com/google/A2UI/tree/main/renderers/react">React</a></strong></td>
 <td>Web</td>
 <td>✅</td>
-<td>❌</td>
+<td>✅</td>
 <td>✅ Stable</td>
 </tr>
 <tr>
@@ -2429,13 +2373,6 @@
 <td>✅ Stable</td>
 </tr>
 <tr>
-<td><strong>SwiftUI</strong></td>
-<td>iOS/macOS</td>
-<td>—</td>
-<td>—</td>
-<td>🚧 Planned Q2 2026</td>
-</tr>
-<tr>
 <td><strong>Jetpack Compose</strong></td>
 <td>Android</td>
 <td>—</td>
@@ -2444,45 +2381,32 @@
 </tr>
 </tbody>
 </table>
+<p>For more see all <a href="../../reference/renderers/">A2UI Renderers</a> and <a href="../../ecosystem/renderers/">Community A2UI Renderers</a>.</p>
 <h2 id="component-catalogs">Component Catalogs<a class="headerlink" href="#component-catalogs" title="Permanent link">&para;</a></h2>
-<p>A component catalog is any collection of components — the Basic Catalog, your own components, or shared libraries. <strong>Your design system is what matters.</strong> You can register any collection of components and functions, and A2UI will work with them. The catalog is just the contract between your agent and your renderer.</p>
+<p>A component catalog is any collection of components.  A2UI provides a "Basic Catalog" but we expect you will add your own components, or shared libraries or fully replace the basic components with your own. </p>
+<p><strong>Your design system is what matters.</strong> You can register any collection of components and functions, and A2UI will work with them. The catalog is just the contract between your agent and your renderer.</p>
 <p>See <a href="../defining-your-own-catalog/">Defining Your Own Catalog</a> for how to define a catalog that matches your design system.</p>
 <h2 id="shared-web-library">Shared Web Library<a class="headerlink" href="#shared-web-library" title="Permanent link">&para;</a></h2>
-<p>All web renderers (Lit, Angular, React) share a common foundation: <strong><code>@a2ui/web_core</code></strong> ocean. This library provides the message processor, state management, and data binding logic that every web renderer needs. Each framework-specific renderer builds on top of it, adding only the rendering layer for its framework.</p>
+<p>All web renderers (Lit, Angular, React) share a common foundation: <strong><code>@a2ui/web_core</code></strong>. This library provides the message processor, state management, and data binding logic that every web renderer needs. Each framework-specific renderer builds on top of it, adding only the rendering layer for its framework.</p>
 <p>This means core protocol handling is consistent across web platforms — only the component rendering differs.</p>
-<h2 id="web-components-lit">Web Components (Lit)<a class="headerlink" href="#web-components-lit" title="Permanent link">&para;</a></h2>
-<blockquote>
-<p>NOTE: Attention</p>
-<p>The Lit client library is not yet published to NPM. To use it, you must build it from source.</p>
-</blockquote>
-<h3 id="building-from-source">Building from Source<a class="headerlink" href="#building-from-source" title="Permanent link">&para;</a></h3>
-<p>Before running the sample or using the renderer, you need to build the shared libraries:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Build the shared web core</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>renderers/web_core
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>npm<span class="w"> </span>install
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>npm<span class="w"> </span>run<span class="w"> </span>build
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Build the Lit renderer</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nb">cd</span><span class="w"> </span>../lit
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>npm<span class="w"> </span>install
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>npm<span class="w"> </span>run<span class="w"> </span>build
-</span></code></pre></div>
-<h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h3>
-<p>Once built, you can use the renderer in your app. The Lit renderer uses:</p>
+<p>The shared <code>web_core</code> library provides:</p>
 <ul>
 <li><strong>Message Processor</strong>: Manages A2UI state and processes incoming messages.</li>
+</ul>
+<h2 id="web-components-lit">Web Components (Lit)<a class="headerlink" href="#web-components-lit" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>npm<span class="w"> </span>install<span class="w"> </span>@a2ui/lit<span class="w"> </span>@a2ui/web_core
+</span></code></pre></div>
+<p>Once installed, you can use the renderer in your app. The Lit renderer uses:</p>
+<ul>
+<li><strong>Message Processor</strong>: Wraps the A2UI message processor.</li>
 <li><strong><code>&lt;a2ui-surface&gt;</code> component</strong>: Renders surfaces in your app.</li>
 <li><strong>Lit Signals</strong>: Provides reactive state management for automatic UI updates.</li>
 </ul>
 <p><strong>See working example:</strong> <a href="https://github.com/google/a2ui/tree/main/samples/client/lit/shell">Lit shell sample</a> — Check its README for detailed run instructions.</p>
 <h2 id="angular">Angular<a class="headerlink" href="#angular" title="Permanent link">&para;</a></h2>
-<blockquote>
-<p>NOTE: Attention</p>
-<p>The Angular client library is not yet published to NPM. Check back in the coming days.</p>
-</blockquote>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>npm<span class="w"> </span>install<span class="w"> </span>@a2ui/angular<span class="w"> </span>@a2ui/web_core
 </span></code></pre></div>
-<p>The Angular renderer provides:</p>
+<p>Once installed, you can use the renderer in your app. The Angular renderer provides:</p>
 <ul>
 <li><strong><code>A2uiRendererService</code></strong>: A service that manages the A2UI message processor and reactive model.</li>
 <li><strong><code>a2ui-v09-component-host</code> component</strong>: A dynamic component host that renders A2UI components from a surface.</li>
@@ -2523,9 +2447,9 @@
 </span></code></pre></div>
 <p>The React renderer provides:</p>
 <ul>
+<li><strong><code>MessageProcessor</code> class</strong>: A class that manages the A2UI message processor and reactive model.</li>
 <li><strong><code>&lt;A2UISurface&gt;</code> component</strong>: Renders A2UI surfaces in your React app</li>
 <li><strong><code>useA2UI()</code> hook</strong>: Accesses the message processor from any component</li>
-<li><strong><code>MessageProcessor</code> class</strong>: Handles incoming A2UI messages (shared with other web renderers)</li>
 </ul>
 <p><strong>See working example:</strong> <a href="https://github.com/google/A2UI/tree/main/samples/client/react/shell">React shell</a></p>
 <h2 id="flutter-genui-sdk">Flutter (GenUI SDK)<a class="headerlink" href="#flutter-genui-sdk" title="Permanent link">&para;</a></h2>
