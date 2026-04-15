@@ -208,9 +208,9 @@ function ShellContent({ config, client, sendAndProcessRef, processor }: ShellCon
             console.log('Chunk messages:', chunkMessages);
             processor.processMessages(chunkMessages);
             setMessages(prev => [...prev, ...chunkMessages]);
-            
-            // Force re-render of surfaces by creating new references
-            setSurfaces(Array.from(processor.model.surfacesMap.values()).map(s => ({...s})));
+            // A2uiSurface subscribes to its surface via useSyncExternalStore;
+            // the onSurfaceCreated/Deleted subscription in useEffect handles
+            // add/remove. No manual re-render needed.
           });
           console.log('Agent response complete:', response);
           // Ensure final state matches the full response
