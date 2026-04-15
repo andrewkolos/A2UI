@@ -46,6 +46,10 @@ export class A2UIClient {
 
     const contentType = response.headers.get('Content-Type');
     const allMessages: A2uiMessage[] = [];
+    // A2A status-update events carry cumulative parts, so createSurface is
+    // redelivered on every chunk. Track surfaces we've already forwarded so
+    // processMessages doesn't throw "Surface already exists" mid-stream.
+    const seenSurfaceIds = new Set<string>();
 
     if (contentType?.includes('text/event-stream')) {
       const reader = response.body?.getReader();
@@ -57,7 +61,7 @@ export class A2UIClient {
           const { done, value } = await reader.read();
           if (done) break;
           buffer += decoder.decode(value, { stream: true });
-          
+
           const lines = buffer.split('\n\n');
           // Keep the last incomplete line in the buffer
           buffer = lines.pop() || '';
@@ -70,7 +74,13 @@ export class A2UIClient {
                 const chunkMessages: A2uiMessage[] = [];
                 for (const part of parts) {
                   if (part.kind === 'data' && part.data) {
-                    chunkMessages.push(part.data as unknown as A2uiMessage);
+                    const msg = part.data as unknown as A2uiMessage;
+                    const createSurface = (msg as { createSurface?: { surfaceId: string } }).createSurface;
+                    if (createSurface) {
+                      if (seenSurfaceIds.has(createSurface.surfaceId)) continue;
+                      seenSurfaceIds.add(createSurface.surfaceId);
+                    }
+                    chunkMessages.push(msg);
                   }
                 }
                 if (chunkMessages.length > 0) {
@@ -78,7 +88,7 @@ export class A2UIClient {
                   onChunk?.(chunkMessages);
                 }
               } catch (e) {
-                console.error('Error parsing SSE data:', e);
+                console.error('Error processing SSE chunk:', e);
               }
             }
           }
