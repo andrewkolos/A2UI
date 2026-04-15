@@ -73,7 +73,7 @@ export function App() {
     return new MessageProcessor([basicCatalog], (action) => {
       console.log('User action:', action);
       if (sendAndProcessRef.current) {
-        sendAndProcessRef.current(action as any);
+        sendAndProcessRef.current({ version: 'v0.9', action });
       }
     });
   }, []);
