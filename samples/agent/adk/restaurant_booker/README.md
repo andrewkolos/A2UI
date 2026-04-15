@@ -1,10 +1,10 @@
-NOTE:
+    NOTE:
 
-This is clone of `restaurant-finder` sample, but with streamlined surface management.
+    This is a clone of `restaurant-finder` sample, with streamlined surface management.
 
-TODO(polina-c):
-1. Migrate clients of `restaurant-finder` to use `restaurant-booker` instead.
-2. Retire `restaurant-finder` and remove this note.
+    TODO(polina-c):
+    1. Migrate clients of `restaurant-finder` to use `restaurant-booker` instead.
+    2. Retire `restaurant-finder` and remove this note.
 
 # A2UI Restaurant finder and table reservation agent sample.
 
