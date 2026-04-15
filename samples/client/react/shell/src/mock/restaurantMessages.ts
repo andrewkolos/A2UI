@@ -85,7 +85,7 @@ export function createRestaurantListMessages(): A2uiMessage[] {
         surfaceId: 'default',
         components: [
           {
-            id: 'root-column',
+            id: 'root',
             component: 'Column',
             children: ['title-heading', 'item-list'],
           },
@@ -222,7 +222,7 @@ export function createBookingFormMessages(
         surfaceId: 'booking-form',
         components: [
           {
-            id: 'booking-form-column',
+            id: 'root',
             component: 'Column',
             children: [
               'booking-title',
@@ -342,7 +342,7 @@ export function createConfirmationMessages(
         surfaceId: 'confirmation',
         components: [
           {
-            id: 'confirmation-card',
+            id: 'root',
             component: 'Card',
             child: 'confirmation-column',
           },
