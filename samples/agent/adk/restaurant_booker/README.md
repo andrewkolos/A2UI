@@ -1,6 +1,6 @@
     This is a clone of `restaurant-finder` sample, with streamlined surface management.
 
-    TODO(polina-c):
+    TODO(polina-c): https://github.com/google/A2UI/issues/1197
     1. Integrate this agent with the Flutter client.
     2. Migrate clients of `restaurant-finder` to use `restaurant-booker` instead.
     3. Retire `restaurant-finder` and remove this note.
@@ -20,7 +20,7 @@ This sample uses the Agent Development Kit (ADK) along with the A2A protocol to 
 1. Navigate to the samples directory:
 
     ```bash
-    cd samples/agent/adk/restaurant_finder
+    cd samples/agent/adk/restaurant_booker
     ```
 
 2. Create an environment file with your API key:
@@ -35,7 +35,11 @@ This sample uses the Agent Development Kit (ADK) along with the A2A protocol to 
     ```bash
     uv run .
     ```
+4. In other terminal window verify that the agent is available via a2a:
 
+    ```bash
+    curl http://localhost:10002/agentcard
+    ```
 
 ## Disclaimer
 
