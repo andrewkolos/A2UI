@@ -1,0 +1,18 @@
+# Copyright 2025 The Flutter Authors.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+name: genui_monorepo
+publish_to: none
+license: BSD-3-Clause
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.35.7 <4.0.0"
+
+workspace:
+  - samples/client/flutter/eval
+  - samples/client/flutter/restaurant_booker
+
+flutter:
+  uses-material-design: true
