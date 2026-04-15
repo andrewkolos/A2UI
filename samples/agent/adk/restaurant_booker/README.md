@@ -1,5 +1,3 @@
-    NOTE:
-
     This is a clone of `restaurant-finder` sample, with streamlined surface management.
 
     TODO(polina-c):
