@@ -1,0 +1,37 @@
+Target dependency graph (15 targets)
+Target 'Runner' in project 'Runner'
+➜ Explicit dependency on target 'Flutter Assemble' in project 'Runner'
+➜ Explicit dependency on target 'FlutterGeneratedPluginSwiftPackage' in project 'FlutterGeneratedPluginSwiftPackage'
+Target 'FlutterGeneratedPluginSwiftPackage' in project 'FlutterGeneratedPluginSwiftPackage'
+➜ Explicit dependency on target 'FlutterGeneratedPluginSwiftPackage' in project 'FlutterGeneratedPluginSwiftPackage'
+➜ Explicit dependency on target 'video-player-avfoundation' in project 'video_player_avfoundation'
+➜ Explicit dependency on target 'url-launcher-macos' in project 'url_launcher_macos'
+➜ Explicit dependency on target 'audioplayers-darwin' in project 'audioplayers_darwin'
+➜ Explicit dependency on target 'FlutterFramework' in project 'FlutterFramework'
+Target 'FlutterGeneratedPluginSwiftPackage' in project 'FlutterGeneratedPluginSwiftPackage'
+➜ Explicit dependency on target 'video-player-avfoundation' in project 'video_player_avfoundation'
+➜ Explicit dependency on target 'url-launcher-macos' in project 'url_launcher_macos'
+➜ Explicit dependency on target 'audioplayers-darwin' in project 'audioplayers_darwin'
+➜ Explicit dependency on target 'FlutterFramework' in project 'FlutterFramework'
+Target 'FlutterFramework' in project 'FlutterFramework'
+➜ Explicit dependency on target 'FlutterFramework' in project 'FlutterFramework'
+Target 'FlutterFramework' in project 'FlutterFramework' (no dependencies)
+Target 'audioplayers-darwin' in project 'audioplayers_darwin'
+➜ Explicit dependency on target 'audioplayers_darwin' in project 'audioplayers_darwin'
+Target 'audioplayers_darwin' in project 'audioplayers_darwin' (no dependencies)
+Target 'url-launcher-macos' in project 'url_launcher_macos'
+➜ Explicit dependency on target 'url_launcher_macos' in project 'url_launcher_macos'
+➜ Explicit dependency on target 'url_launcher_macos_url_launcher_macos' in project 'url_launcher_macos'
+Target 'url_launcher_macos' in project 'url_launcher_macos'
+➜ Explicit dependency on target 'url_launcher_macos_url_launcher_macos' in project 'url_launcher_macos'
+Target 'url_launcher_macos_url_launcher_macos' in project 'url_launcher_macos' (no dependencies)
+Target 'video-player-avfoundation' in project 'video_player_avfoundation'
+➜ Explicit dependency on target 'video_player_avfoundation' in project 'video_player_avfoundation'
+➜ Explicit dependency on target 'video_player_avfoundation_video_player_avfoundation' in project 'video_player_avfoundation'
+➜ Explicit dependency on target 'video_player_avfoundation_macos' in project 'video_player_avfoundation'
+Target 'video_player_avfoundation' in project 'video_player_avfoundation'
+➜ Explicit dependency on target 'video_player_avfoundation_video_player_avfoundation' in project 'video_player_avfoundation'
+➜ Explicit dependency on target 'video_player_avfoundation_macos' in project 'video_player_avfoundation'
+Target 'video_player_avfoundation_macos' in project 'video_player_avfoundation' (no dependencies)
+Target 'video_player_avfoundation_video_player_avfoundation' in project 'video_player_avfoundation' (no dependencies)
+Target 'Flutter Assemble' in project 'Runner' (no dependencies)
