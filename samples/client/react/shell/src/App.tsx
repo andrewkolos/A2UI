@@ -15,8 +15,9 @@
  */
 
 import { useState, useEffect, useCallback, useMemo, useRef, FormEvent } from 'react';
-import { A2uiSurface, basicCatalog } from '@a2ui/react/v0_9';
+import { A2uiSurface, basicCatalog, MarkdownContext } from '@a2ui/react/v0_9';
 import { MessageProcessor, A2uiMessage, A2uiClientMessage } from '@a2ui/web_core/v0_9';
+import { renderMarkdown } from '@a2ui/markdown-it';
 import { A2UIClient } from './client';
 import { AppConfig, restaurantConfig } from './configs';
 import {
@@ -78,12 +79,14 @@ export function App() {
   }, []);
 
   return (
-    <ShellContent
-      config={config}
-      client={client}
-      sendAndProcessRef={sendAndProcessRef}
-      processor={processor}
-    />
+    <MarkdownContext.Provider value={renderMarkdown}>
+      <ShellContent
+        config={config}
+        client={client}
+        sendAndProcessRef={sendAndProcessRef}
+        processor={processor}
+      />
+    </MarkdownContext.Provider>
   );
 }
 
