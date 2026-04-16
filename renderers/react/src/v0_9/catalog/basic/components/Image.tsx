@@ -31,7 +31,13 @@ export const Image = createComponentImplementation(ImageApi, ({props}) => {
     width: '100%',
     height: 'auto',
     display: 'block',
+    minWidth: 0,
+    alignSelf: 'flex-start',
   };
+  if (typeof (props as { weight?: number }).weight === 'number') {
+    const w = (props as { weight?: number }).weight!;
+    style.flex = `${w} ${w} 0`;
+  }
 
   if (props.variant === 'icon') {
     style.width = '24px';

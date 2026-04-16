@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
+import React from 'react';
 import {createComponentImplementation} from '../../../adapter';
 import {ColumnApi} from '@a2ui/web_core/v0_9/basic_catalog';
 import {ChildList} from './ChildList';
 import {mapJustify, mapAlign} from '../utils';
 
 export const Column = createComponentImplementation(ColumnApi, ({props, buildChild, context}) => {
+  const style: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: mapJustify(props.justify),
+    alignItems: mapAlign(props.align),
+    width: '100%',
+    margin: 0,
+    padding: 0,
+    minWidth: 0,
+  };
+  if (typeof (props as { weight?: number }).weight === 'number') {
+    const w = (props as { weight?: number }).weight!;
+    style.flex = `${w} ${w} 0`;
+  }
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: mapJustify(props.justify),
-        alignItems: mapAlign(props.align),
-        width: '100%',
-        margin: 0,
-        padding: 0,
-      }}
-    >
+    <div style={style}>
       <ChildList childList={props.children} buildChild={buildChild} context={context} />
     </div>
   );
