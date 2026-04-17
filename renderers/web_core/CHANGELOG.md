@@ -1,3 +1,8 @@
+## Unreleased
+
+- (v0_9) Duplicate `createSurface` messages are now silently ignored instead
+  of throwing. [#1225](https://github.com/google/A2UI/pull/1225)
+
 ## 0.9.1
 
 - Add new `FrameworkSignal` concept, which represents a generic signal from a
