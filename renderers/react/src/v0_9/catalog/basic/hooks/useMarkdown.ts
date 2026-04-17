@@ -16,30 +16,17 @@
 
 import {useState, useEffect} from 'react';
 import {useMarkdownRenderer} from '../context/MarkdownContext';
+import {renderMarkdown as defaultRenderer} from '@a2ui/markdown-it';
 import type {MarkdownRendererOptions} from '@a2ui/web_core/types/types';
 
-let warningLogged = false;
-
 export function useMarkdown(text: string, options?: MarkdownRendererOptions) {
-  const renderer = useMarkdownRenderer();
+  const contextRenderer = useMarkdownRenderer();
+  const renderer = contextRenderer ?? defaultRenderer;
   const [html, setHtml] = useState<string | null>(null);
 
   const optionsKey = JSON.stringify(options);
 
   useEffect(() => {
-    if (!renderer) {
-      if (!warningLogged) {
-        console.warn(
-          '[useMarkdown]',
-          "can't render markdown because no markdown renderer is configured.\n",
-          'Use `@a2ui/markdown-it`, or your own markdown renderer.'
-        );
-        warningLogged = true;
-      }
-      setHtml(null);
-      return;
-    }
-
     let active = true;
     const parsedOptions = optionsKey ? JSON.parse(optionsKey) : undefined;
 
