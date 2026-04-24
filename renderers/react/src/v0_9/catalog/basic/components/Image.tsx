@@ -23,7 +23,7 @@ export const Image = createComponentImplementation(ImageApi, ({props}) => {
   useBasicCatalogStyles();
   const mapFit = (fit?: string): React.CSSProperties['objectFit'] => {
     if (fit === 'scaleDown') return 'scale-down';
-    return (fit as React.CSSProperties['objectFit']) || 'fill';
+    return (fit as React.CSSProperties['objectFit']) || 'cover';
   };
 
   const style: React.CSSProperties = {
