@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {setupTestDom, teardownTestDom, asyncUpdate} from '../dom-setup.js';
+import {setupTestDom, teardownTestDom, asyncUpdate, resolveTestNode} from '../dom-setup.js';
 import assert from 'node:assert';
 import {describe, it, beforeEach, after, before} from 'node:test';
 import {ComponentContext, MessageProcessor} from '@a2ui/web_core/v0_9';
@@ -71,6 +71,7 @@ describe('CheckBox Component', () => {
     const context = new ComponentContext(surface, 'checkbox_invalid');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'checkbox_invalid');
     });
 
     const errorDiv = el.shadowRoot.querySelector('.error');

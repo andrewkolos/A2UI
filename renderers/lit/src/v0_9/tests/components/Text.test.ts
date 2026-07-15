@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {setupTestDom, teardownTestDom, asyncUpdate} from '../dom-setup.js';
+import {setupTestDom, teardownTestDom, asyncUpdate, resolveTestNode} from '../dom-setup.js';
 import assert from 'node:assert';
 import {describe, it, beforeEach, afterEach, after, before} from 'node:test';
 import {
@@ -98,6 +98,7 @@ describe('Text Component', () => {
     const context = new ComponentContext(surface, 't_static');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 't_static');
     });
 
     const span = el.shadowRoot?.querySelector('.no-markdown-renderer');
@@ -113,6 +114,7 @@ describe('Text Component', () => {
     const context = new ComponentContext(surface, 't_dynamic');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 't_dynamic');
     });
 
     const span = el.shadowRoot?.querySelector('.no-markdown-renderer');
@@ -134,6 +136,7 @@ describe('Text Component', () => {
     const context = new ComponentContext(surface, 't_caption');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 't_caption');
     });
 
     const captionSpan = el.shadowRoot?.querySelector('span.a2ui-caption');

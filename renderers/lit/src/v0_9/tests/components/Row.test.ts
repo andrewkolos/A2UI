@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {setupTestDom, teardownTestDom, asyncUpdate} from '../dom-setup.js';
+import {setupTestDom, teardownTestDom, asyncUpdate, resolveTestNode} from '../dom-setup.js';
 import assert from 'node:assert';
 import {describe, it, beforeEach, afterEach, after, before} from 'node:test';
 import {
@@ -99,6 +99,7 @@ describe('Row Component', () => {
     const context = new ComponentContext(surface, 'row1');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'row1');
     });
 
     // Check flex styles on the host element style attribute

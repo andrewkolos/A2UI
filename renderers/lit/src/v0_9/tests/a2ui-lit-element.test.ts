@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {setupTestDom, teardownTestDom, asyncUpdate} from './dom-setup.js';
+import {setupTestDom, teardownTestDom, asyncUpdate, resolveTestNode} from './dom-setup.js';
 import assert from 'node:assert';
 import {describe, it, beforeEach, after, before} from 'node:test';
 
@@ -128,6 +128,7 @@ describe('A2uiLitElement', () => {
     const context = new ComponentContext(surface, 'root');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'root');
     });
 
     assert.strictEqual(controllerCreatedCount, 1);
@@ -141,15 +142,17 @@ describe('A2uiLitElement', () => {
     const context1 = new ComponentContext(surface, 'root');
     await asyncUpdate(el, e => {
       e.context = context1;
+      e.node = resolveTestNode(surface, 'root');
     });
 
     assert.strictEqual(controllerCreatedCount, 1);
     assert.strictEqual(disposedCount, 0);
 
-    // change context
+    // change node
     const context2 = new ComponentContext(surface, 'child_id');
     await asyncUpdate(el, e => {
       e.context = context2;
+      e.node = resolveTestNode(surface, 'child_id');
     });
 
     // should have disposed the old and created a new one
@@ -168,6 +171,7 @@ describe('A2uiLitElement', () => {
     const context = new ComponentContext(surface, 'root');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'root');
     });
 
     // Remove the component from the surface components model
@@ -193,6 +197,7 @@ describe('A2uiLitElement', () => {
     const context = new ComponentContext(surface, 'root');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'root');
     });
 
     // Dispose the surface

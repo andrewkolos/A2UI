@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {setupTestDom, teardownTestDom, asyncUpdate} from '../dom-setup.js';
+import {setupTestDom, teardownTestDom, asyncUpdate, resolveTestNode} from '../dom-setup.js';
 import assert from 'node:assert';
 import {describe, it, beforeEach, after, before} from 'node:test';
 import {ComponentContext, MessageProcessor} from '@a2ui/web_core/v0_9';
@@ -85,6 +85,7 @@ describe('ChoicePicker Component', () => {
     const context = new ComponentContext(surface, 'choice_picker_chips');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'choice_picker_chips');
     });
 
     const buttons = el.shadowRoot.querySelectorAll('button.chip');
@@ -101,6 +102,7 @@ describe('ChoicePicker Component', () => {
     const context = new ComponentContext(surface, 'choice_picker_filterable');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'choice_picker_filterable');
     });
 
     // Initially 2 options + 1 main label = 3 labels

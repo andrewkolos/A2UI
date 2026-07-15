@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {setupTestDom, teardownTestDom, asyncUpdate} from '../dom-setup.js';
+import {setupTestDom, teardownTestDom, asyncUpdate, resolveTestNode} from '../dom-setup.js';
 import assert from 'node:assert';
 import {describe, it, beforeEach, afterEach, after, before} from 'node:test';
 import {
@@ -103,6 +103,7 @@ describe('TextField Component', () => {
     const context = new ComponentContext(surface, 'field_name');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'field_name');
     });
 
     const label = el.shadowRoot?.querySelector('label');
@@ -122,6 +123,7 @@ describe('TextField Component', () => {
     const context = new ComponentContext(surface, 'field_name');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'field_name');
     });
 
     const input = el.shadowRoot?.querySelector('input');
@@ -143,6 +145,7 @@ describe('TextField Component', () => {
     const context = new ComponentContext(surface, 'field_long');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'field_long');
     });
 
     const textarea = el.shadowRoot?.querySelector('textarea');
@@ -161,6 +164,7 @@ describe('TextField Component', () => {
     const context = new ComponentContext(surface, 'field_invalid');
     await asyncUpdate(el, e => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'field_invalid');
     });
 
     const error = el.shadowRoot?.querySelector('.error');

@@ -16,7 +16,7 @@
 
 import assert from 'node:assert';
 import {describe, it, beforeEach, mock, after, before} from 'node:test';
-import {setupTestDom, teardownTestDom, asyncUpdate} from './dom-setup.js';
+import {setupTestDom, teardownTestDom, asyncUpdate, resolveTestNode} from './dom-setup.js';
 
 import {A2uiController} from '../a2ui-controller.js';
 import {MessageProcessor, ComponentContext} from '@a2ui/web_core/v0_9';
@@ -35,15 +35,17 @@ describe('A2uiController', () => {
    * Helper function to instantiate and append the `test-mock-host` custom element
    * defined in the `before()` hook below.
    */
-  async function createMockHost(context: ComponentContext) {
+  async function createMockHost(surfaceModel: any, componentId: string) {
     const mockHost = document.createElement('test-mock-host') as any;
     document.body.appendChild(mockHost);
 
-    // Initializing the context property triggers Lit's reactive execution cycle,
+    // Initializing the node property triggers Lit's reactive execution cycle,
     // which in turn synchronously creates the controller instance via createController()
     // inside the custom element's update hooks.
+    const node = resolveTestNode(surfaceModel, componentId);
     await asyncUpdate(mockHost, host => {
-      host.context = context;
+      host.context = new ComponentContext(surfaceModel, componentId);
+      host.node = node;
     });
 
     return mockHost;
@@ -117,9 +119,11 @@ describe('A2uiController', () => {
     document.body.appendChild(mockHost);
 
     mock.method(mockHost, 'addController');
+    const node = resolveTestNode(surface, 'test-comp');
 
     await asyncUpdate(mockHost, host => {
       host.context = context;
+      host.node = node;
     });
 
     const controller = mockHost.testController;
@@ -129,7 +133,7 @@ describe('A2uiController', () => {
   });
 
   it('should request update on host when data changes', async () => {
-    const mockHost = await createMockHost(context);
+    const mockHost = await createMockHost(surface, 'test-comp');
     const controller = mockHost.testController;
 
     // Map requestUpdate only *after* initial initialization to catch changes
@@ -171,9 +175,8 @@ describe('A2uiController', () => {
     // Simulate what happens when a component's ID changes or it gets recycled by
     // disposing the old controller and replacing the host context instance.
     controller.dispose();
-    const context2 = new ComponentContext(surface, 'test-comp-2');
 
-    const mockHost2 = await createMockHost(context2);
+    const mockHost2 = await createMockHost(surface, 'test-comp-2');
     const controller2 = mockHost2.testController;
 
     mock.method(mockHost2, 'requestUpdate');
@@ -201,7 +204,7 @@ describe('A2uiController', () => {
   });
 
   it('should unsubscribe when host disconnected', async () => {
-    const mockHost = await createMockHost(context);
+    const mockHost = await createMockHost(surface, 'test-comp');
     const controller = mockHost.testController;
 
     mock.method(mockHost, 'requestUpdate');

@@ -15,6 +15,13 @@
  */
 
 import {JSDOM} from 'jsdom';
+import {
+  ComponentModel,
+  ComponentNode,
+  NodeResolver,
+  SurfaceModel,
+  peekValue,
+} from '@a2ui/web_core/v0_9';
 
 let dom: JSDOM | null = null;
 const originalGlobals: Record<string, any> = {};
@@ -126,4 +133,32 @@ export async function asyncUpdate<T = any>(
     // Await a macro-task for mock objects that lack Lit's lifecycle
     await new Promise(r => setTimeout(r, 0));
   }
+}
+
+/**
+ * Resolves one component into a live {@link ComponentNode} through a real
+ * resolver, for element tests that mount a single component. The surface
+ * must have a `root` component, or a `Card` catalog entry so this helper can
+ * wrap `componentId` in one (the resolver builds from `root` only).
+ */
+export function resolveTestNode(surface: SurfaceModel<any>, componentId: string): ComponentNode {
+  if (componentId !== 'root') {
+    if (surface.componentsModel.get('root')) {
+      surface.componentsModel.removeComponent('root');
+    }
+    surface.componentsModel.addComponent(new ComponentModel('root', 'Card', {child: componentId}));
+  }
+  const resolver = new NodeResolver(surface, surface.catalog);
+  const root = peekValue(resolver.rootNode);
+  if (!root) {
+    throw new Error('resolveTestNode: the surface has no root component.');
+  }
+  if (componentId === 'root') {
+    return root;
+  }
+  const child = peekValue(root.props)['child'];
+  if (!(child instanceof ComponentNode)) {
+    throw new Error(`resolveTestNode: '${componentId}' did not resolve to a node.`);
+  }
+  return child;
 }

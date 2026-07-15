@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {setupTestDom, teardownTestDom, asyncUpdate} from './dom-setup.js';
+import {setupTestDom, teardownTestDom, asyncUpdate, resolveTestNode} from './dom-setup.js';
 import assert from 'node:assert';
 import {describe, it, beforeEach, after, before} from 'node:test';
 
@@ -99,6 +99,7 @@ describe('BasicCatalogA2uiLitElement', () => {
     const context = new ComponentContext(surface, 'root');
     await asyncUpdate(el, (e: any) => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'root');
     });
 
     assert.strictEqual(el.style.getPropertyValue('--a2ui-color-primary'), '#ff0000');
@@ -127,6 +128,7 @@ describe('BasicCatalogA2uiLitElement', () => {
     const context = new ComponentContext(surface, 'root');
     await asyncUpdate(el, (e: any) => {
       e.context = context;
+      e.node = resolveTestNode(surface, 'root');
     });
 
     assert.strictEqual(el.style.getPropertyValue('--a2ui-color-primary'), '#ff0000');
@@ -140,6 +142,7 @@ describe('BasicCatalogA2uiLitElement', () => {
     const contextNoTheme = new ComponentContext(surfaceNoThemeMock, 'root');
     await asyncUpdate(el, (e: any) => {
       e.context = contextNoTheme;
+      e.node = resolveTestNode(surfaceNoThemeMock, 'root');
     });
 
     assert.strictEqual(el.style.getPropertyValue('--a2ui-color-primary'), '');

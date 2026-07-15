@@ -15,17 +15,24 @@
  */
 
 import {html, nothing, LitElement, PropertyValues} from 'lit';
-import {customElement, property, state} from 'lit/decorators.js';
-import {SurfaceModel, ComponentContext} from '@a2ui/web_core/v0_9';
+import {customElement, property} from 'lit/decorators.js';
+import {
+  ComponentNode,
+  NodeResolver,
+  SurfaceModel,
+  effect,
+  getValue,
+  peekValue,
+} from '@a2ui/web_core/v0_9';
 import {renderA2uiNode} from './render-a2ui-node.js';
 import {LitComponentApi} from '../types.js';
 
 /**
  * A Lit component that renders an A2UI Surface.
  *
- * This component takes a `SurfaceModel` and dynamically renders the root component
- * and its children using the provided catalog. It handles loading states if the
- * root component is not yet available.
+ * This component takes a `SurfaceModel`, resolves it through a
+ * `NodeResolver`, and renders the resolved component tree. It handles
+ * loading states while the root component is not yet available.
  *
  * @element a2ui-surface
  */
@@ -36,56 +43,60 @@ export class A2uiSurface extends LitElement {
    */
   @property({type: Object}) accessor surface: SurfaceModel<LitComponentApi> | undefined;
 
-  /**
-   * Internal state indicating whether the root component exists.
-   * @internal
-   */
-  @state() accessor _hasRoot = false;
-  /**
-   * Subscription cleanup function.
-   * @internal
-   */
-  private unsubscribe?: () => void;
+  private resolver?: NodeResolver<LitComponentApi>;
+  private stopEffect?: () => void;
+  private lastRoot: ComponentNode | undefined;
 
   /**
    * Handles lifecycle updates, specifically when the `surface` property changes.
-   *
-   * It manages subscriptions to the components model to detect when the 'root'
-   * component is created.
-   *
-   * @param changedProperties Map of changed properties.
    */
   protected override willUpdate(changedProperties: PropertyValues) {
     if (changedProperties.has('surface')) {
-      if (this.unsubscribe) {
-        this.unsubscribe();
-        this.unsubscribe = undefined;
-      }
-      this._hasRoot = !!this.surface?.componentsModel.get('root');
-
-      if (this.surface && !this._hasRoot) {
-        const sub = this.surface.componentsModel.onCreated.subscribe(comp => {
-          if (comp.id === 'root') {
-            this._hasRoot = true;
-            this.requestUpdate();
-            this.unsubscribe?.();
-            this.unsubscribe = undefined;
-          }
-        });
-        this.unsubscribe = () => sub.unsubscribe();
-      }
+      this.teardown();
+      this.setup();
     }
   }
 
   /**
-   * Cleans up subscriptions.
+   * Recreates the resolver when the element reconnects after a disconnect.
+   */
+  override connectedCallback() {
+    super.connectedCallback();
+    if (this.surface && !this.resolver) {
+      this.setup();
+    }
+  }
+
+  /**
+   * Disposes the resolver and its whole node tree.
    */
   override disconnectedCallback() {
     super.disconnectedCallback();
-    if (this.unsubscribe) {
-      this.unsubscribe();
-      this.unsubscribe = undefined;
-    }
+    this.teardown();
+  }
+
+  private setup() {
+    if (!this.surface) return;
+    const resolver = new NodeResolver(this.surface, this.surface.catalog);
+    this.resolver = resolver;
+    this.lastRoot = peekValue(resolver.rootNode);
+    this.stopEffect = effect(() => {
+      const root = getValue(resolver.rootNode);
+      // The effect runs synchronously at subscription time; the identity
+      // check absorbs that first call.
+      if (root !== this.lastRoot) {
+        this.lastRoot = root;
+        this.requestUpdate();
+      }
+    });
+  }
+
+  private teardown() {
+    this.stopEffect?.();
+    this.stopEffect = undefined;
+    this.resolver?.dispose();
+    this.resolver = undefined;
+    this.lastRoot = undefined;
   }
 
   /**
@@ -93,20 +104,14 @@ export class A2uiSurface extends LitElement {
    *
    * If `surface` is not set, returns `nothing`.
    * If the root component is not yet available, renders a loading state.
-   * Otherwise, renders the root component using `renderA2uiNode`.
+   * Otherwise, renders the resolved root node.
    */
   override render() {
-    if (!this.surface) return nothing;
-    if (!this._hasRoot) {
+    if (!this.surface || !this.resolver) return nothing;
+    const root = peekValue(this.resolver.rootNode);
+    if (!root) {
       return html`<slot name="loading"><div>Loading surface...</div></slot>`;
     }
-
-    try {
-      const rootContext = new ComponentContext(this.surface, 'root', '/');
-      return html`${renderA2uiNode(rootContext, this.surface.catalog)}`;
-    } catch (e) {
-      console.error('Error creating root context:', e);
-      return html`<div>Error rendering surface</div>`;
-    }
+    return renderA2uiNode(this.surface, root);
   }
 }
