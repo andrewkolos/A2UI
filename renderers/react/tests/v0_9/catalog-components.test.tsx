@@ -189,10 +189,9 @@ describe('Basic Catalog Components', () => {
       expect(button.disabled).toBe(false);
     });
 
-    it('delegates child rendering to buildChild', () => {
-      const {buildChild} = renderA2uiComponent(Button, 'b1', {child: 'inner1'});
-      expect(buildChild).toHaveBeenCalledWith('inner1');
-      expect(screen.getByTestId('child-inner1')).toBeDefined();
+    it('renders a placeholder for its not-yet-arrived child', () => {
+      renderA2uiComponent(Button, 'b1', {child: 'inner1'});
+      expect(screen.getByText('[Loading inner1...]')).toBeDefined();
     });
   });
 
@@ -233,21 +232,18 @@ describe('Basic Catalog Components', () => {
 
   describe('Layout and Structural Components', () => {
     it('Row renders multiple children', () => {
-      const {buildChild} = renderA2uiComponent(Row, 'r1', {
+      renderA2uiComponent(Row, 'r1', {
         children: ['c1', 'c2'],
       });
 
-      expect(buildChild).toHaveBeenCalledWith('c1');
-      expect(buildChild).toHaveBeenCalledWith('c2');
-      expect(screen.getByTestId('child-c1')).toBeDefined();
-      expect(screen.getByTestId('child-c2')).toBeDefined();
+      expect(screen.getByText('[Loading c1...]')).toBeDefined();
+      expect(screen.getByText('[Loading c2...]')).toBeDefined();
     });
 
     it('Column renders children vertically', () => {
-      const {buildChild, view} = renderA2uiComponent(Column, 'col1', {
+      const {view} = renderA2uiComponent(Column, 'col1', {
         children: ['c1'],
       });
-      expect(buildChild).toHaveBeenCalledWith('c1');
       expect(view.container.firstChild).toHaveStyle({flexDirection: 'column'});
     });
 
@@ -270,9 +266,8 @@ describe('Basic Catalog Components', () => {
     });
 
     it('Card renders its child', () => {
-      const {buildChild} = renderA2uiComponent(Card, 'card1', {child: 'c1'});
-      expect(buildChild).toHaveBeenCalledWith('c1');
-      expect(screen.getByTestId('child-c1')).toBeDefined();
+      renderA2uiComponent(Card, 'card1', {child: 'c1'});
+      expect(screen.getByText('[Loading c1...]')).toBeDefined();
     });
 
     it('Tabs switches active tab content', () => {
@@ -283,13 +278,13 @@ describe('Basic Catalog Components', () => {
         ],
       });
 
-      expect(screen.getByTestId('child-home_c')).toBeDefined();
-      expect(screen.queryByTestId('child-settings_c')).toBeNull();
+      expect(screen.getByText('[Loading home_c...]')).toBeDefined();
+      expect(screen.queryByText('[Loading settings_c...]')).toBeNull();
 
       fireEvent.click(screen.getByText('Settings'));
 
-      expect(screen.queryByTestId('child-home_c')).toBeNull();
-      expect(screen.getByTestId('child-settings_c')).toBeDefined();
+      expect(screen.queryByText('[Loading home_c...]')).toBeNull();
+      expect(screen.getByText('[Loading settings_c...]')).toBeDefined();
     });
 
     it('Modal opens content on trigger click', () => {
@@ -298,12 +293,12 @@ describe('Basic Catalog Components', () => {
         content: 'c1',
       });
 
-      expect(screen.getByTestId('child-t1')).toBeDefined();
-      expect(screen.queryByTestId('child-c1')).toBeNull();
+      expect(screen.getByText('[Loading t1...]')).toBeDefined();
+      expect(screen.queryByText('[Loading c1...]')).toBeNull();
 
-      fireEvent.click(screen.getByTestId('child-t1'));
+      fireEvent.click(screen.getByText('[Loading t1...]'));
 
-      expect(screen.getByTestId('child-c1')).toBeDefined();
+      expect(screen.getByText('[Loading c1...]')).toBeDefined();
     });
 
     it('Divider renders a themed line', () => {

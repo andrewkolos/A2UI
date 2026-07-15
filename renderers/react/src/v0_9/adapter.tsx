@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import React, {useRef, useSyncExternalStore, useCallback, memo, useEffect} from 'react';
-import {type ComponentContext, GenericBinder} from '@a2ui/web_core/v0_9';
+import React from 'react';
+import type {ComponentContext} from '@a2ui/web_core/v0_9';
 import type {
   ComponentApi,
   InferredComponentApiSchemaType,
@@ -23,18 +23,20 @@ import type {
 } from '@a2ui/web_core/v0_9';
 
 export interface ReactComponentImplementation extends ComponentApi {
-  /** The framework-specific rendering wrapper. */
-  render: React.FC<{
+  /**
+   * The view function rendered with props the node layer resolved. Absent on
+   * binderless implementations, which render through {@link render} instead.
+   */
+  view?: React.FC<ReactA2uiComponentProps<any>>;
+  /**
+   * A self-binding renderer: it receives no resolved props and reads
+   * everything from `context` itself. Only binderless implementations
+   * provide one.
+   */
+  render?: React.FC<{
     context: ComponentContext;
     buildChild: (id: string, basePath?: string) => React.ReactNode;
   }>;
-  /**
-   * The unwrapped view function `render` wraps. `A2uiNodeSurface` renders it
-   * directly with props resolved by the node layer, so the component works
-   * without `render`'s own binder. Absent on binderless implementations,
-   * which the node surface falls back to rendering through `render`.
-   */
-  view?: React.FC<ReactA2uiComponentProps<any>>;
 }
 
 export type ReactA2uiComponentProps<T> = {
@@ -46,7 +48,8 @@ export type ReactA2uiComponentProps<T> = {
 // --- Component Factories ---
 
 /**
- * Creates a React component implementation using the deep generic binder.
+ * Creates a React component implementation from a view function. The view
+ * receives fully resolved props from the surface's node resolver.
  */
 export function createComponentImplementation<Api extends ComponentApi>(
   api: Api,
@@ -54,57 +57,9 @@ export function createComponentImplementation<Api extends ComponentApi>(
     ReactA2uiComponentProps<ResolveA2uiProps<InferredComponentApiSchemaType<Api>>>
   >,
 ): ReactComponentImplementation {
-  type Props = ResolveA2uiProps<InferredComponentApiSchemaType<Api>>;
-
-  const MemoizedRender = memo(RenderComponent, (prev, next) => {
-    if (prev.props !== next.props) return false;
-    if (prev.context.componentModel.id !== next.context.componentModel.id) return false;
-    if (prev.context.dataContext.path !== next.context.dataContext.path) return false;
-    return true;
-  });
-
-  const ReactWrapper: React.FC<{
-    context: ComponentContext;
-    buildChild: (id: string, basePath?: string) => React.ReactNode;
-  }> = ({context, buildChild}) => {
-    const bindingRef = useRef<GenericBinder<Props> | null>(null);
-
-    // Create or recreate the binder if the context object changes.
-    // DeferredChild memoizes `context`, so reference changes strictly correspond
-    // to ComponentModel updates (like type changes) or Base Path adjustments.
-    if (!bindingRef.current) {
-      bindingRef.current = new GenericBinder<Props>(context, api.schema);
-    } else if ((bindingRef.current as unknown as {context: ComponentContext}).context !== context) {
-      bindingRef.current.dispose();
-      bindingRef.current = new GenericBinder<Props>(context, api.schema);
-    }
-    const binding = bindingRef.current;
-
-    const subscribe = useCallback(
-      (callback: () => void) => {
-        const sub = binding.subscribe(callback);
-        return () => sub.unsubscribe();
-      },
-      [binding],
-    );
-
-    const getSnapshot = useCallback(() => binding.snapshot, [binding]);
-    const props = useSyncExternalStore(subscribe, getSnapshot);
-
-    // Prevent DataModel subscription leaks on unmount
-    useEffect(() => {
-      return () => binding.dispose();
-    }, [binding]);
-
-    return (
-      <MemoizedRender props={props || ({} as Props)} buildChild={buildChild} context={context} />
-    );
-  };
-
   return {
     name: api.name,
     schema: api.schema,
-    render: ReactWrapper,
     view: RenderComponent as React.FC<ReactA2uiComponentProps<any>>,
   };
 }

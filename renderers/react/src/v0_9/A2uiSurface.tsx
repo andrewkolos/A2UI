@@ -14,119 +14,191 @@
  * limitations under the License.
  */
 
-import React, {useSyncExternalStore, memo, useMemo, useCallback} from 'react';
-import {type SurfaceModel, ComponentContext, type ComponentModel} from '@a2ui/web_core/v0_9';
+/**
+ * Surface renderer driven by the node layer.
+ *
+ * `A2uiSurface` constructs one `NodeResolver` and renders the resolved
+ * `ComponentNode` tree it maintains. Each node's view subscribes to that
+ * node's props signal only, so a data change re-renders exactly the affected
+ * component.
+ *
+ * Views receive props converted to the shapes the view contract uses: child
+ * ids as strings, template children as `{id, basePath}` pairs, and
+ * `buildChild` maps those refs back to their live nodes. A property is a
+ * child reference when the catalog schema declares it as one
+ * (`ComponentIdSchema` / `ChildListSchema`, or `componentIdWithDescription` /
+ * `childListWithDescription` when adding prose); ids passed to `buildChild`
+ * from undeclared properties cannot be resolved.
+ */
+
+import React, {memo, useCallback, useMemo, useSyncExternalStore} from 'react';
+import {
+  ComponentContext,
+  ComponentNode,
+  NodeResolver,
+  effect,
+  getValue,
+  peekValue,
+  type NodeProps,
+  type Signal,
+  type SurfaceModel,
+} from '@a2ui/web_core/v0_9';
 import type {ReactComponentImplementation} from './adapter';
 
-const ResolvedChild = memo(
-  ({
-    surface,
-    id,
-    basePath,
-    compImpl,
-    componentModel,
-  }: {
-    surface: SurfaceModel<ReactComponentImplementation>;
-    id: string;
-    basePath: string;
-    componentModel: ComponentModel;
-    compImpl: ReactComponentImplementation;
-  }) => {
-    const ComponentToRender = compImpl.render;
+function useSignalValue<T>(signal: Signal<T>): T {
+  const subscribe = useCallback(
+    (onChange: () => void) =>
+      effect(() => {
+        getValue(signal);
+        onChange();
+      }),
+    [signal],
+  );
+  const getSnapshot = useCallback(() => peekValue(signal), [signal]);
+  return useSyncExternalStore(subscribe, getSnapshot);
+}
 
-    // Create context. Recreate if the componentModel instance changes (e.g. type change recreation).
+/** Child nodes of one view, keyed by componentId and by componentId@dataPath. */
+type ChildIndex = Map<string, ComponentNode>;
+
+function registerChild(index: ChildIndex, child: ComponentNode): void {
+  index.set(`${child.componentId}@${child.dataPath}`, child);
+  if (!index.has(child.componentId)) {
+    index.set(child.componentId, child);
+  }
+}
+
+/**
+ * Converts node-resolved props to the shapes views are written against: a
+ * child node becomes its componentId string when it shares the parent's data
+ * scope, and an `{id, basePath}` pair when it was spawned at a scoped path
+ * (a template item). The nodes themselves are collected into `index` for
+ * `buildChild` to find again.
+ */
+function toViewValue(parent: ComponentNode, value: unknown, index: ChildIndex): unknown {
+  if (value instanceof ComponentNode) {
+    registerChild(index, value);
+    if (value.dataPath !== parent.dataPath) {
+      return {id: value.componentId, basePath: value.dataPath};
+    }
+    return value.componentId;
+  }
+  if (Array.isArray(value)) {
+    return value.map(item => toViewValue(parent, item, index));
+  }
+  if (value && typeof value === 'object') {
+    const result: Record<string, unknown> = {};
+    for (const [key, inner] of Object.entries(value)) {
+      result[key] = toViewValue(parent, inner, index);
+    }
+    return result;
+  }
+  return value;
+}
+
+const NodeView = memo(
+  ({surface, node}: {surface: SurfaceModel<ReactComponentImplementation>; node: ComponentNode}) => {
+    const resolved = useSignalValue(node.props);
+
+    const {viewProps, childIndex} = useMemo(() => {
+      const index: ChildIndex = new Map();
+      const converted: NodeProps = {};
+      for (const [key, value] of Object.entries(resolved)) {
+        converted[key] = toViewValue(node, value, index);
+      }
+      return {viewProps: converted, childIndex: index};
+    }, [node, resolved]);
+
     const context = useMemo(
-      () => new ComponentContext(surface, id, basePath),
-      // componentModel is used as a trigger for recreation even if not in the body
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [surface, id, basePath, componentModel],
+      () =>
+        node.isPlaceholder
+          ? undefined
+          : new ComponentContext(surface, node.componentId, node.dataPath),
+      [surface, node],
     );
 
     const buildChild = useCallback(
-      (childId: string, specificPath?: string) => {
-        const path = specificPath || context.dataContext.path;
+      (child: string | ComponentNode, basePath?: string): React.ReactNode => {
+        const childNode =
+          child instanceof ComponentNode
+            ? child
+            : (childIndex.get(basePath ? `${child}@${basePath}` : child) ??
+              childIndex.get(`${child}@${node.dataPath}`));
+        if (childNode) {
+          return <NodeView key={childNode.instanceId} surface={surface} node={childNode} />;
+        }
         return (
-          <DeferredChild
-            key={`${childId}-${path}`}
-            surface={surface}
-            id={childId}
-            basePath={path}
-          />
+          <div key={`${String(child)}`} style={{color: 'gray', padding: '4px'}}>
+            [Unresolved child {String(child)}]
+          </div>
         );
       },
-      [surface, context.dataContext.path],
+      [surface, childIndex, node],
     );
 
-    return <ComponentToRender context={context} buildChild={buildChild} />;
+    if (node.isPlaceholder) {
+      return <div style={{color: 'gray', padding: '4px'}}>[Loading {node.componentId}...]</div>;
+    }
+    const impl = surface.catalog.components.get(node.type);
+    if (!impl) {
+      return <div style={{color: 'red'}}>Unknown component: {node.type}</div>;
+    }
+    const View = impl.view;
+    if (!View) {
+      const Render = impl.render;
+      if (!Render) {
+        return <div style={{color: 'red'}}>Unrenderable component: {node.type}</div>;
+      }
+      // Binderless implementation: renders from the context, binding itself.
+      return <Render context={context!} buildChild={buildChild} />;
+    }
+    return <View props={viewProps} buildChild={buildChild} context={context!} />;
   },
 );
-ResolvedChild.displayName = 'ResolvedChild';
+NodeView.displayName = 'NodeView';
 
-export const DeferredChild: React.FC<{
+export const A2uiSurface: React.FC<{
   surface: SurfaceModel<ReactComponentImplementation>;
-  id: string;
-  basePath: string;
-}> = memo(({surface, id, basePath}) => {
-  // 1. Subscribe specifically to this component's existence
-  const store = useMemo(() => {
-    let version = 0;
-    return {
-      subscribe: (cb: () => void) => {
-        const unsub1 = surface.componentsModel.onCreated.subscribe(comp => {
-          if (comp.id === id) {
-            version++;
-            cb();
-          }
-        });
-        const unsub2 = surface.componentsModel.onDeleted.subscribe(delId => {
-          if (delId === id) {
-            version++;
-            cb();
-          }
-        });
-        return () => {
-          unsub1.unsubscribe();
-          unsub2.unsubscribe();
-        };
-      },
-      getSnapshot: () => {
-        const comp = surface.componentsModel.get(id);
-        // We use instance identity + version as the snapshot to ensure
-        // type replacements (e.g. Button -> Text) trigger a re-render.
-        return comp ? `${comp.type}-${version}` : `missing-${version}`;
-      },
-    };
-  }, [surface, id]);
-
-  useSyncExternalStore(store.subscribe, store.getSnapshot);
-
-  const componentModel = surface.componentsModel.get(id);
-
-  if (!componentModel) {
-    return <div style={{color: 'gray', padding: '4px'}}>[Loading {id}...]</div>;
-  }
-
-  const compImpl = surface.catalog.components.get(componentModel.type);
-
-  if (!compImpl) {
-    return <div style={{color: 'red'}}>Unknown component: {componentModel.type}</div>;
-  }
-
-  return (
-    <ResolvedChild
-      surface={surface}
-      id={id}
-      basePath={basePath}
-      componentModel={componentModel}
-      compImpl={compImpl}
-    />
+}> = ({surface}) => {
+  // The resolver is created inside subscribe, which React calls only for
+  // committed renders: a render that is discarded (concurrent mode,
+  // Suspense) never constructs one, and every constructed resolver is
+  // disposed by its own unsubscribe. StrictMode's double mount simply
+  // creates and disposes two in turn.
+  const box = useMemo(
+    () => ({resolver: undefined as NodeResolver<ReactComponentImplementation> | undefined}),
+    [surface],
   );
-});
-DeferredChild.displayName = 'DeferredChild';
+  const subscribe = useCallback(
+    (onChange: () => void) => {
+      const resolver = new NodeResolver(surface, surface.catalog);
+      box.resolver = resolver;
+      onChange();
+      const stopEffect = effect(() => {
+        getValue(resolver.rootNode);
+        onChange();
+      });
+      return () => {
+        stopEffect();
+        resolver.dispose();
+        if (box.resolver === resolver) {
+          box.resolver = undefined;
+        }
+      };
+    },
+    [surface, box],
+  );
+  const getSnapshot = useCallback(
+    () => (box.resolver ? peekValue(box.resolver.rootNode) : undefined),
+    [box],
+  );
+  const root = useSyncExternalStore(subscribe, getSnapshot);
 
-export const A2uiSurface: React.FC<{surface: SurfaceModel<ReactComponentImplementation>}> = ({
-  surface,
-}) => {
-  // The root component always has ID 'root' and base path '/'
-  return <DeferredChild surface={surface} id="root" basePath="/" />;
+  if (!root) {
+    return <div style={{color: 'gray', padding: '4px'}}>[Loading root...]</div>;
+  }
+  return <NodeView surface={surface} node={root} />;
 };
+
+/** @deprecated `A2uiSurface` renders through the node layer; use it directly. */
+export const A2uiNodeSurface = A2uiSurface;
