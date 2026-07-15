@@ -33,11 +33,10 @@ import {
 import {ComponentModel} from '../state/component-model.js';
 import {SurfaceModel} from '../state/surface-model.js';
 import {A2uiClientAction} from '../schema/client-to-server.js';
-import {ActionSchema, DynamicStringSchema} from '../schema/common-types.js';
+import {ActionSchema, ChildListSchema, ComponentIdSchema, DynamicStringSchema} from '../schema/common-types.js';
 import {effect, getValue, peekValue, Signal} from '../reactivity/signals.js';
 import {ComponentNode, NodeProps, PLACEHOLDER_TYPE} from './component-node.js';
 import {NodeResolver} from './node-resolver.js';
-import {componentReference, componentReferenceList} from './ref-fields.js';
 
 const TextApi = {
   name: 'Text',
@@ -49,16 +48,16 @@ const ButtonApi = {
 };
 const CardApi = {
   name: 'Card',
-  schema: z.object({child: componentReference().optional()}),
+  schema: z.object({child: ComponentIdSchema.optional()}),
 };
 const ColumnApi = {
   name: 'Column',
-  schema: z.object({children: componentReferenceList().optional()}),
+  schema: z.object({children: ChildListSchema.optional()}),
 };
 const TabsApi = {
   name: 'Tabs',
   schema: z.object({
-    items: z.array(z.object({title: z.string(), child: componentReference()})).optional(),
+    items: z.array(z.object({title: z.string(), child: ComponentIdSchema})).optional(),
   }),
 };
 
