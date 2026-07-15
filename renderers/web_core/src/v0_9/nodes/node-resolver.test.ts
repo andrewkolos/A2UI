@@ -33,7 +33,12 @@ import {
 import {ComponentModel} from '../state/component-model.js';
 import {SurfaceModel} from '../state/surface-model.js';
 import {A2uiClientAction} from '../schema/client-to-server.js';
-import {ActionSchema, ChildListSchema, ComponentIdSchema, DynamicStringSchema} from '../schema/common-types.js';
+import {
+  ActionSchema,
+  ChildListSchema,
+  ComponentIdSchema,
+  DynamicStringSchema,
+} from '../schema/common-types.js';
 import {effect, getValue, peekValue, Signal} from '../reactivity/signals.js';
 import {ComponentNode, NodeProps, PLACEHOLDER_TYPE} from './component-node.js';
 import {NodeResolver} from './node-resolver.js';
@@ -621,6 +626,32 @@ describe('NodeResolver malformed and unusual payloads', () => {
       errors.filter(e => e.code === 'UNKNOWN_COMPONENT_TYPE').length,
       reportsBefore,
     );
+    resolver.dispose();
+  });
+});
+
+describe('NodeResolver stale event delivery', () => {
+  it('reconciles events emitted before construction but delivered after', async () => {
+    const catalog = makeCatalog();
+    const surface = new SurfaceModel('surf-1', catalog);
+    add(surface, 'root', 'Text', {text: 'original'});
+    // Model events deliver to each listener in turn, awaiting async
+    // listeners, so this delayer forces later subscribers to receive the
+    // deletion after further mutations have happened.
+    surface.componentsModel.onDeleted.subscribe(async () => {
+      await flush();
+    });
+    surface.componentsModel.removeComponent('root');
+    add(surface, 'root', 'Text', {text: 'fresh'});
+
+    const resolver = new NodeResolver(surface, catalog);
+    await flush();
+    await flush();
+
+    const root = getValue(resolver.rootNode);
+    assert.ok(root);
+    assert.strictEqual(root.disposed, false);
+    assert.strictEqual(props(root).text, 'fresh');
     resolver.dispose();
   });
 });
