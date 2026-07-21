@@ -38,7 +38,7 @@ class ComponentContext:
     @classmethod
     def from_surface(
         cls,
-        surface: SurfaceModel,
+        surface: SurfaceModel[Any, Any],
         component_id: str,
         data_model_base_path: str = "/",
     ) -> "ComponentContext":

@@ -14,7 +14,7 @@
 
 import copy
 import warnings
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Generic, Optional
 from ..common.events import EventSource
 from .data_model import DataModel
 from .surface_components_model import SurfaceComponentsModel
@@ -22,8 +22,13 @@ from ..catalog import Catalog
 from ..catalog.catalog import TComponent, TFunction
 
 
-class SurfaceModel:
-    """Represents a single active UI Surface state tree."""
+class SurfaceModel(Generic[TComponent, TFunction]):
+    """Represents a single active UI Surface state tree.
+
+    Generic over the catalog's component and function kinds so that
+    ``surface.catalog`` keeps those types instead of erasing them to
+    ``Catalog[Any, Any]``.
+    """
 
     def __init__(
         self,

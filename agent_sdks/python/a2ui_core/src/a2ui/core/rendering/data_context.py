@@ -36,7 +36,7 @@ class DataContext:
 
     def __init__(
         self,
-        surface: SurfaceModel,
+        surface: SurfaceModel[Any, Any],
         path: str = "/",
     ):
         self.surface = surface

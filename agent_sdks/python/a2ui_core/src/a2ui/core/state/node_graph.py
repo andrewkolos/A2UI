@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 class NodeGraph:
     """Manages the lifecycle and resolution of living ComponentNodes for a surface."""
 
-    def __init__(self, surface: SurfaceModel) -> None:
+    def __init__(self, surface: SurfaceModel[Any, Any]) -> None:
         self.surface = surface
 
         self.rootNode: Signal[Optional[ComponentNode]] = Signal(None)
