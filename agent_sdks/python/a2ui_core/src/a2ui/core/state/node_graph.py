@@ -51,18 +51,31 @@ class NodeGraph:
         root_node = self.rootNode.value
         return root_node.to_dict() if root_node else None
 
-    def get_or_create_node(self, component_id: str, data_path: str) -> ComponentNode:
-        """Gets or reactively creates a living Node for a component ID at a given data path."""
-        # Calculate unique instance_id
+    def get_or_create_node(
+        self,
+        component_id: str,
+        data_path: str,
+        parent_edge: str = "",
+        slot: str = "",
+    ) -> ComponentNode:
+        """Gets or reactively creates a living Node for a component at a position.
+
+        Nodes are identified by their edge (the path from the root: which parent,
+        which referencing slot, which component, which data path), not by
+        component id + data path alone. A component referenced from two positions
+        therefore resolves to two distinct nodes, so dropping one reference never
+        disposes the other's. ``slot`` is the referencing property, with ``[i]``
+        for list items and ``[i].key`` for refs nested inside list items.
+        """
         if data_path == "/":
             instance_id = component_id
         else:
             norm_path = data_path.rstrip("/") if data_path != "/" else "/"
             instance_id = f"{component_id}-[{norm_path}]"
 
-        # Return existing cached node
-        if instance_id in self.active_nodes:
-            return self.active_nodes[instance_id]
+        edge_key = f"{parent_edge}>{slot}>{component_id}@{data_path}"
+        if edge_key in self.active_nodes:
+            return self.active_nodes[edge_key]
 
         def collect_nodes(value: Any) -> set[ComponentNode]:
             nodes = set()
@@ -91,13 +104,16 @@ class NodeGraph:
                 instance_id, component_id, "Placeholder", data_path, props_signal
             )
 
-        self.active_nodes[instance_id] = node
+        node._edge_key = edge_key
+        node._parent_edge = parent_edge
+        node._slot = slot
+        self.active_nodes[edge_key] = node
 
         # If placeholder, it has no properties. It cleans itself from cache on disposal.
         if not component_model:
 
             def cleanup_placeholder() -> None:
-                self.active_nodes.pop(instance_id, None)
+                self.active_nodes.pop(edge_key, None)
 
             node.add_cleanup(cleanup_placeholder)
             return node
@@ -119,7 +135,7 @@ class NodeGraph:
         )
 
         binder = GenericBinder(comp_context)
-        self.binders[instance_id] = binder
+        self.binders[edge_key] = binder
 
         child_nodes_by_prop: Dict[str, Any] = {}
         template_subs: Dict[str, Subscription] = {}
@@ -162,7 +178,9 @@ class NodeGraph:
                 if single_ref in new_props:
                     child_id = new_props[single_ref]
                     if isinstance(child_id, str) and child_id:
-                        child_node = self.get_or_create_node(child_id, data_path)
+                        child_node = self.get_or_create_node(
+                            child_id, data_path, edge_key, single_ref
+                        )
                         current_resolved[single_ref] = child_node
                         new_props[single_ref] = child_node
                     elif child_id is None:
@@ -175,16 +193,21 @@ class NodeGraph:
                     val = new_props[list_ref]
                     if isinstance(val, list):
                         child_list: List[Any] = []
-                        for item in val:
+                        for i, item in enumerate(val):
+                            item_slot = f"{list_ref}[{i}]"
                             if isinstance(item, str) and item:
                                 child_list.append(
-                                    self.get_or_create_node(item, data_path)
+                                    self.get_or_create_node(
+                                        item, data_path, edge_key, item_slot
+                                    )
                                 )
                             elif isinstance(item, dict) and "componentId" in item:
                                 cid = item["componentId"]
                                 if isinstance(cid, str) and cid:
                                     child_list.append(
-                                        self.get_or_create_node(cid, data_path)
+                                        self.get_or_create_node(
+                                            cid, data_path, edge_key, item_slot
+                                        )
                                     )
                                 else:
                                     child_list.append(item)
@@ -194,13 +217,17 @@ class NodeGraph:
                                 for sub_key in nested_refs.get(list_ref, {"child"}):
                                     if sub_key in item:
                                         item_child_id = item[sub_key]
+                                        nested_slot = f"{item_slot}.{sub_key}"
                                         if (
                                             isinstance(item_child_id, str)
                                             and item_child_id
                                         ):
                                             resolved_item[sub_key] = (
                                                 self.get_or_create_node(
-                                                    item_child_id, data_path
+                                                    item_child_id,
+                                                    data_path,
+                                                    edge_key,
+                                                    nested_slot,
                                                 )
                                             )
                                             has_resolved = True
@@ -212,7 +239,10 @@ class NodeGraph:
                                             if isinstance(cid, str) and cid:
                                                 resolved_item[sub_key] = (
                                                     self.get_or_create_node(
-                                                        cid, data_path
+                                                        cid,
+                                                        data_path,
+                                                        edge_key,
+                                                        nested_slot,
                                                     )
                                                 )
                                                 has_resolved = True
@@ -254,7 +284,10 @@ class NodeGraph:
                             for i in range(len(array_data)):
                                 scoped_path = f"{template_path}/{i}"
                                 node_inst = self.get_or_create_node(
-                                    template_comp_id, scoped_path
+                                    template_comp_id,
+                                    scoped_path,
+                                    edge_key,
+                                    f"{list_ref}[{i}]",
                                 )
                                 new_spawned.append(node_inst)
 
@@ -296,8 +329,8 @@ class NodeGraph:
             for child_node in collect_nodes(list(child_nodes_by_prop.values())):
                 child_node.dispose()
             child_nodes_by_prop.clear()
-            self.binders.pop(instance_id, None)
-            self.active_nodes.pop(instance_id, None)
+            self.binders.pop(edge_key, None)
+            self.active_nodes.pop(edge_key, None)
 
         node.add_cleanup(cleanup_node)
         return node
@@ -315,8 +348,10 @@ class NodeGraph:
         # 2. Recreate identified nodes
         for old_node in nodes_to_recreate:
             data_path = old_node.data_path
+            parent_edge = old_node._parent_edge
+            slot = old_node._slot
             old_node.dispose()
-            self.get_or_create_node(component_id, data_path)
+            self.get_or_create_node(component_id, data_path, parent_edge, slot)
 
         # 3. Update rootNode if root component was created
         if component_id == "root" and not self.rootNode.value:
@@ -326,7 +361,7 @@ class NodeGraph:
         for active_node in list(self.active_nodes.values()):
             if active_node.component_id == component_id:
                 continue
-            binder = self.binders.get(active_node.instance_id)
+            binder = self.binders.get(active_node._edge_key)
             if binder:
                 raw_props = binder.context.component_model.properties
                 if self._references_component(raw_props, component_id):
@@ -346,7 +381,7 @@ class NodeGraph:
 
         # 3. Rebuild references on other parents referencing this component
         for active_node in list(self.active_nodes.values()):
-            binder = self.binders.get(active_node.instance_id)
+            binder = self.binders.get(active_node._edge_key)
             if binder:
                 raw_props = binder.context.component_model.properties
                 if self._references_component(raw_props, component_id):
