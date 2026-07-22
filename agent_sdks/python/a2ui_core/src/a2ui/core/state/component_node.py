@@ -35,11 +35,14 @@ class ComponentNode:
         self.on_destroyed: EventSource = EventSource()
         self._cleanup_callbacks: List[Callable[[], None]] = []
         self._disposed: bool = False
-        # Edge identity (the path from the root to this position), set by the
-        # NodeGraph so a component referenced by two parents is two distinct nodes.
-        self._edge_key: str = ""
-        self._parent_edge: str = ""
-        self._slot: str = ""
+        # This node's position in the tree, set by the NodeGraph, so a component
+        # referenced from two positions becomes two distinct nodes. position_key is
+        # this node's full position; parent_position and referencing_property are the
+        # parts it contributes to its children (its own position, and the property
+        # each child is referenced through).
+        self._position_key: str = ""
+        self._parent_position: str = ""
+        self._referencing_property: str = ""
 
     def add_cleanup(self, callback: Callable[[], None]) -> None:
         """Registers a cleanup callback to be executed when this node is disposed."""
